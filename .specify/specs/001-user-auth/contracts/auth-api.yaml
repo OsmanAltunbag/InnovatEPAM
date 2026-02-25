@@ -1,0 +1,382 @@
+openapi: 3.0.3
+info:
+  title: InnovatEPAM Authentication API
+  description: |
+    RESTful API for user authentication in the InnovatEPAM Portal.
+    Supports user registration, login, and JWT-based session management.
+    
+    ## Features
+    - User registration with email, password, and role selection
+    - User login with JWT token generation
+    - Role-based access control (submitter vs evaluator/admin)
+    - Account lockout after failed login attempts
+    - BCrypt password hashing
+    
+    ## Security
+    - Passwords hashed with BCrypt (cost factor 12)
+    - JWT tokens signed with HS256 algorithm
+    - Rate limiting: 5 failed attempts within 15 minutes triggers 30-minute lockout
+    - HTTPS required for production
+    
+    ## Authentication
+    Protected endpoints require `Authorization: Bearer <JWT_TOKEN>` header.
+  version: 1.0.0
+  contact:
+    name: InnovatEPAM Development Team
+    email: dev@innovatepam.com
+
+servers:
+  - url: http://localhost:8080/api/v1
+    description: Local development server
+  - url: https://api.innovatepam.com/v1
+    description: Production server
+
+tags:
+  - name: Authentication
+    description: User registration and login operations
+
+paths:
+  /auth/register:
+    post:
+      tags:
+        - Authentication
+      summary: Register a new user
+      description: |
+        Creates a new user account with email, password, and role.
+        Email must be unique across all users.
+        Password must be at least 8 characters and not in common password list.
+        Role must be either 'submitter' or 'evaluator/admin'.
+      operationId: registerUser
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterRequest'
+            examples:
+              submitter:
+                summary: Register as submitter
+                value:
+                  email: john.doe@example.com
+                  password: SecureP@ss123
+                  role: submitter
+              evaluator:
+                summary: Register as evaluator/admin
+                value:
+                  email: jane.admin@example.com
+                  password: AdminP@ss456
+                  role: evaluator/admin
+      responses:
+        '201':
+          description: User registered successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+              example:
+                token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+                email: john.doe@example.com
+                role: submitter
+                userId: 550e8400-e29b-41d4-a716-446655440000
+                expiresIn: 86400
+        '400':
+          description: Invalid input (malformed email, weak password, invalid role)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                invalidEmail:
+                  summary: Invalid email format
+                  value:
+                    status: 400
+                    message: "Invalid email format"
+                    timestamp: "2026-02-25T10:30:00Z"
+                    path: "/api/v1/auth/register"
+                weakPassword:
+                  summary: Password too short
+                  value:
+                    status: 400
+                    message: "Password must be at least 8 characters"
+                    timestamp: "2026-02-25T10:30:00Z"
+                    path: "/api/v1/auth/register"
+        '409':
+          description: Email already registered
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                status: 409
+                message: "Email already registered"
+                timestamp: "2026-02-25T10:30:00Z"
+                path: "/api/v1/auth/register"
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /auth/login:
+    post:
+      tags:
+        - Authentication
+      summary: Authenticate user and receive JWT token
+      description: |
+        Authenticates user with email and password.
+        Returns JWT token valid for 24 hours on success.
+        Tracks failed attempts; after 5 failures within 15 minutes, account is locked for 30 minutes.
+      operationId: loginUser
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+            example:
+              email: john.doe@example.com
+              password: SecureP@ss123
+      responses:
+        '200':
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+              example:
+                token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+                email: john.doe@example.com
+                role: submitter
+                userId: 550e8400-e29b-41d4-a716-446655440000
+                expiresIn: 86400
+        '401':
+          description: Invalid credentials (email or password incorrect)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                status: 401
+                message: "Invalid email or password"
+                timestamp: "2026-02-25T10:30:00Z"
+                path: "/api/v1/auth/login"
+        '403':
+          description: Account locked due to too many failed attempts
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                status: 403
+                message: "Account locked due to too many failed attempts. Try again after 2026-02-25T11:00:00Z"
+                timestamp: "2026-02-25T10:30:00Z"
+                path: "/api/v1/auth/login"
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /auth/me:
+    get:
+      tags:
+        - Authentication
+      summary: Get current authenticated user information
+      description: |
+        Returns information about the currently authenticated user based on JWT token.
+        Requires valid JWT token in Authorization header.
+      operationId: getCurrentUser
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: User information retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserInfo'
+              example:
+                userId: 550e8400-e29b-41d4-a716-446655440000
+                email: john.doe@example.com
+                role: submitter
+                createdAt: "2026-02-20T08:15:30Z"
+        '401':
+          description: Unauthorized (missing, invalid, or expired token)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                missingToken:
+                  summary: No token provided
+                  value:
+                    status: 401
+                    message: "Authorization header is missing"
+                    timestamp: "2026-02-25T10:30:00Z"
+                    path: "/api/v1/auth/me"
+                invalidToken:
+                  summary: Invalid or expired token
+                  value:
+                    status: 401
+                    message: "Invalid or expired token"
+                    timestamp: "2026-02-25T10:30:00Z"
+                    path: "/api/v1/auth/me"
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: |
+        JWT token obtained from /auth/login or /auth/register endpoints.
+        Token format: `Authorization: Bearer <token>`
+        Token expires after 24 hours.
+
+  schemas:
+    RegisterRequest:
+      type: object
+      required:
+        - email
+        - password
+        - role
+      properties:
+        email:
+          type: string
+          format: email
+          maxLength: 255
+          description: User's email address (must be unique)
+          example: john.doe@example.com
+        password:
+          type: string
+          format: password
+          minLength: 8
+          maxLength: 100
+          description: User's password (minimum 8 characters, will be hashed with BCrypt)
+          example: SecureP@ss123
+        role:
+          type: string
+          enum:
+            - submitter
+            - evaluator/admin
+          description: User's role in the system
+          example: submitter
+
+    LoginRequest:
+      type: object
+      required:
+        - email
+        - password
+      properties:
+        email:
+          type: string
+          format: email
+          maxLength: 255
+          description: User's email address
+          example: john.doe@example.com
+        password:
+          type: string
+          format: password
+          description: User's password
+          example: SecureP@ss123
+
+    AuthResponse:
+      type: object
+      required:
+        - token
+        - email
+        - role
+        - userId
+        - expiresIn
+      properties:
+        token:
+          type: string
+          description: JWT authentication token (valid for 24 hours)
+          example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJqb2huLmRvZUBleGFtcGxlLmNvbSIsInVzZXJJZCI6IjU1MGU4NDAwLWUyOWItNDFkNC1hNzE2LTQ0NjY1NTQ0MDAwMCIsInJvbGUiOiJzdWJtaXR0ZXIiLCJpYXQiOjE3MDg4NzY4MDAsImV4cCI6MTcwODk2MzIwMH0.signature
+        email:
+          type: string
+          format: email
+          description: User's email address
+          example: john.doe@example.com
+        role:
+          type: string
+          enum:
+            - submitter
+            - evaluator/admin
+          description: User's role
+          example: submitter
+        userId:
+          type: string
+          format: uuid
+          description: User's unique identifier
+          example: 550e8400-e29b-41d4-a716-446655440000
+        expiresIn:
+          type: integer
+          format: int64
+          description: Token expiration time in seconds from now (86400 = 24 hours)
+          example: 86400
+
+    UserInfo:
+      type: object
+      required:
+        - userId
+        - email
+        - role
+        - createdAt
+      properties:
+        userId:
+          type: string
+          format: uuid
+          description: User's unique identifier
+          example: 550e8400-e29b-41d4-a716-446655440000
+        email:
+          type: string
+          format: email
+          description: User's email address
+          example: john.doe@example.com
+        role:
+          type: string
+          enum:
+            - submitter
+            - evaluator/admin
+          description: User's role
+          example: submitter
+        createdAt:
+          type: string
+          format: date-time
+          description: Account creation timestamp (ISO 8601)
+          example: "2026-02-20T08:15:30Z"
+
+    ErrorResponse:
+      type: object
+      required:
+        - status
+        - message
+        - timestamp
+        - path
+      properties:
+        status:
+          type: integer
+          description: HTTP status code
+          example: 400
+        message:
+          type: string
+          description: Human-readable error message
+          example: "Invalid email format"
+        timestamp:
+          type: string
+          format: date-time
+          description: Error occurrence timestamp (ISO 8601)
+          example: "2026-02-25T10:30:00Z"
+        path:
+          type: string
+          description: Request path that caused the error
+          example: "/api/v1/auth/register"
