@@ -32,7 +32,7 @@ export default function LoginForm({ onSubmit, loading }) {
         <label htmlFor="email" className="block text-sm font-medium text-slate-700">Email</label>
         <input
           id="email"
-          className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2"
+          className="mt-1.5 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
           type="email"
           value={email}
           onChange={(event) => setEmail(event.target.value)}
@@ -44,7 +44,7 @@ export default function LoginForm({ onSubmit, loading }) {
         <label htmlFor="password" className="block text-sm font-medium text-slate-700">Password</label>
         <input
           id="password"
-          className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2"
+          className="mt-1.5 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
           type="password"
           value={password}
           onChange={(event) => setPassword(event.target.value)}
@@ -53,7 +53,7 @@ export default function LoginForm({ onSubmit, loading }) {
       </div>
 
       <button
-        className="w-full rounded-md bg-brand-600 px-4 py-2 text-white hover:bg-brand-700"
+        className="w-full rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-blue-700 disabled:opacity-50"
         type="submit"
         disabled={loading}
       >

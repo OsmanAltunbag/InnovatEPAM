@@ -5,22 +5,26 @@ import DashboardPage from "./pages/DashboardPage";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
 import ProtectedRoute from "./components/ProtectedRoute";
+import Layout from "./components/Layout";
+import IdeaListing from "./pages/IdeaListing";
+import IdeaForm from "./pages/IdeaForm";
+import IdeaDetail from "./pages/IdeaDetail";
 
 const Home = () => (
   <div className="mx-auto max-w-2xl px-4 py-10">
-    <h1 className="text-3xl font-semibold">InnovatEPAM Portal</h1>
+    <h1 className="text-3xl font-bold text-slate-900">InnovatEPAM Portal</h1>
     <p className="mt-2 text-slate-600">
       Build your account to access submissions and evaluations.
     </p>
     <div className="mt-6 flex gap-3">
       <Link
-        className="rounded-md bg-brand-600 px-4 py-2 text-white hover:bg-brand-700"
+        className="rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-blue-700"
         to="/register"
       >
         Register
       </Link>
       <Link
-        className="rounded-md border border-slate-200 px-4 py-2 text-slate-700 hover:border-slate-300"
+        className="rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 transition-colors hover:bg-slate-50"
         to="/login"
       >
         Login
@@ -42,7 +46,39 @@ export default function App() {
               path="/dashboard"
               element={
                 <ProtectedRoute>
-                  <DashboardPage />
+                  <Layout>
+                    <DashboardPage />
+                  </Layout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/ideas"
+              element={
+                <ProtectedRoute>
+                  <Layout>
+                    <IdeaListing />
+                  </Layout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/ideas/new"
+              element={
+                <ProtectedRoute>
+                  <Layout>
+                    <IdeaForm />
+                  </Layout>
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/ideas/:id"
+              element={
+                <ProtectedRoute>
+                  <Layout>
+                    <IdeaDetail />
+                  </Layout>
                 </ProtectedRoute>
               }
             />

@@ -1,8 +1,9 @@
 import { http, HttpResponse } from 'msw';
+import { ideaHandlers } from './ideaHandlers';
 
 const API_BASE = 'http://localhost:8080/api/auth';
 
-export const handlers = [
+const authHandlers = [
   // Register endpoint
   http.post(`${API_BASE}/register`, async ({ request }) => {
     const body = await request.json();
@@ -111,3 +112,6 @@ export const handlers = [
     );
   })
 ];
+
+// Combine all handlers
+export const handlers = [...authHandlers, ...ideaHandlers];

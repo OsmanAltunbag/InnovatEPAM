@@ -1,4 +1,0 @@
--------------------------------------------------------------------------------
-Test set: com.innovatepam.auth.controller.AuthControllerLoginIntegrationTest
--------------------------------------------------------------------------------
-Tests run: 9, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 36.00 s -- in com.innovatepam.auth.controller.AuthControllerLoginIntegrationTest
