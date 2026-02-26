@@ -1,5 +1,6 @@
 com\innovatepam\auth\controller\AuthControllerMeIntegrationTest.class
 com\innovatepam\auth\repository\AuthenticationAttemptRepositoryIntegrationTest.class
+com\innovatepam\idea\controller\IdeaEvaluationControllerIntegrationTest.class
 com\innovatepam\auth\service\AuthenticationAttemptServiceTest.class
 com\innovatepam\idea\repository\IdeaRepositoryIntegrationTest.class
 com\innovatepam\auth\security\SecurityConfigIntegrationTest.class

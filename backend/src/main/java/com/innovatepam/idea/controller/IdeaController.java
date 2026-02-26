@@ -97,6 +97,8 @@ public class IdeaController {
         return ResponseEntity.ok(idea);
     }
 
+
+
     @GetMapping("/{ideaId}/attachments/{attachmentId}")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<Resource> downloadAttachment(

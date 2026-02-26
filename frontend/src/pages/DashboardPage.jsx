@@ -1,6 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import useAuth from "../hooks/useAuth";
+import { canSubmit, canEvaluate } from "../utils/roleUtils";
 
 export default function DashboardPage() {
   const { user } = useAuth();
@@ -43,7 +44,7 @@ export default function DashboardPage() {
             </p>
           </button>
 
-          {(user?.role === "submitter" || user?.role === "admin") && (
+          {canSubmit(user?.role) && (
             <button
               onClick={() => navigate("/ideas/new")}
               className="rounded-xl border border-slate-200 bg-white p-6 text-left shadow-sm transition-all hover:border-blue-300 hover:shadow-md"
@@ -56,7 +57,7 @@ export default function DashboardPage() {
             </button>
           )}
 
-          {(user?.role === "evaluator" || user?.role === "admin") && (
+          {canEvaluate(user?.role) && (
             <button
               onClick={() => navigate("/ideas")}
               className="rounded-xl border border-slate-200 bg-white p-6 text-left shadow-sm transition-all hover:border-blue-300 hover:shadow-md"

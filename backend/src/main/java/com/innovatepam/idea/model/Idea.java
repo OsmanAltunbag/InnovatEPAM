@@ -1,6 +1,11 @@
 package com.innovatepam.idea.model;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+
 import com.innovatepam.auth.model.User;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -22,9 +27,6 @@ import jakarta.persistence.Version;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Table(name = "ideas")
@@ -149,6 +151,12 @@ public class Idea {
 
     public void setEvaluations(List<IdeaEvaluation> evaluations) {
         this.evaluations = evaluations;
+    }
+
+    // Helper method to add evaluation while maintaining relationship
+    public void addEvaluation(IdeaEvaluation evaluation) {
+        evaluations.add(evaluation);
+        evaluation.setIdea(this);
     }
 
     public LocalDateTime getCreatedAt() {

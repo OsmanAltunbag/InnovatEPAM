@@ -136,6 +136,11 @@
             <configuration>
               <excludes>
                 <exclude>**/*MockitoMock*</exclude>
+                <exclude>**/dto/**</exclude>
+                <exclude>**/model/**</exclude>
+                <exclude>**/exception/**</exclude>
+                <exclude>**/repository/**</exclude>
+                <exclude>**/config/**</exclude>
               </excludes>
             </configuration>
           </execution>
@@ -148,6 +153,11 @@
             <configuration>
               <excludes>
                 <exclude>**/*MockitoMock*</exclude>
+                <exclude>**/dto/**</exclude>
+                <exclude>**/model/**</exclude>
+                <exclude>**/exception/**</exclude>
+                <exclude>**/repository/**</exclude>
+                <exclude>**/config/**</exclude>
               </excludes>
             </configuration>
           </execution>
@@ -159,10 +169,64 @@
             <configuration>
               <excludes>
                 <exclude>**/*MockitoMock*</exclude>
+                <exclude>**/dto/**</exclude>
+                <exclude>**/model/**</exclude>
+                <exclude>**/exception/**</exclude>
+                <exclude>**/repository/**</exclude>
+                <exclude>**/config/**</exclude>
               </excludes>
               <rules>
+                <!-- Overall bundle coverage rules -->
                 <rule>
                   <element>BUNDLE</element>
+                  <excludes>
+                    <exclude>**/dto/**</exclude>
+                    <exclude>**/model/**</exclude>
+                    <exclude>**/exception/**</exclude>
+                    <exclude>**/repository/**</exclude>
+                    <exclude>**/config/**</exclude>
+                  </excludes>
+                  <limits>
+                    <limit>
+                      <counter>LINE</counter>
+                      <value>COVEREDRATIO</value>
+                      <minimum>0.80</minimum>
+                    </limit>
+                    <limit>
+                      <counter>BRANCH</counter>
+                      <value>COVEREDRATIO</value>
+                      <minimum>0.75</minimum>
+                    </limit>
+                  </limits>
+                </rule>
+                <!-- Service classes should have 85%+ coverage -->
+                <rule>
+                  <element>CLASS</element>
+                  <includes>
+                    <include>**/service/*Service</include>
+                  </includes>
+                  <excludes>
+                    <exclude>**/dto/**</exclude>
+                    <exclude>**/model/**</exclude>
+                  </excludes>
+                  <limits>
+                    <limit>
+                      <counter>LINE</counter>
+                      <value>COVEREDRATIO</value>
+                      <minimum>0.85</minimum>
+                    </limit>
+                  </limits>
+                </rule>
+                <!-- Controller classes should have 80%+ coverage -->
+                <rule>
+                  <element>CLASS</element>
+                  <includes>
+                    <include>**/controller/*Controller</include>
+                  </includes>
+                  <excludes>
+                    <exclude>**/dto/**</exclude>
+                    <exclude>**/model/**</exclude>
+                  </excludes>
                   <limits>
                     <limit>
                       <counter>LINE</counter>

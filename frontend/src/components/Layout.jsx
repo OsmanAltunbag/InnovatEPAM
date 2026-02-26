@@ -1,6 +1,7 @@
 import React from "react";
 import useAuth from "../hooks/useAuth";
 import { useNavigate } from "react-router-dom";
+import { canSubmit } from "../utils/roleUtils";
 
 export default function Layout({ children }) {
   const { user, signOut } = useAuth();
@@ -38,7 +39,7 @@ export default function Layout({ children }) {
                 Ideas
               </button>
             </li>
-            {(user?.role === "submitter" || user?.role === "admin") && (
+            {canSubmit(user?.role) && (
               <li>
                 <button
                   onClick={() => navigate("/ideas/new")}

@@ -1,4 +1,44 @@
 -------------------------------------------------------------------------------
 Test set: com.innovatepam.auth.controller.AuthControllerMeIntegrationTest
 -------------------------------------------------------------------------------
-Tests run: 9, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 4.492 s -- in com.innovatepam.auth.controller.AuthControllerMeIntegrationTest
+Tests run: 9, Failures: 0, Errors: 5, Skipped: 0, Time elapsed: 0.456 s <<< FAILURE! -- in com.innovatepam.auth.controller.AuthControllerMeIntegrationTest
+com.innovatepam.auth.controller.AuthControllerMeIntegrationTest.getMe_MultipleTimes_ReturnsSameUserInfo -- Time elapsed: 0.100 s <<< ERROR!
+java.lang.NullPointerException: Cannot invoke "com.fasterxml.jackson.databind.JsonNode.asText()" because the return value of "com.fasterxml.jackson.databind.JsonNode.get(String)" is null
+	at com.innovatepam.auth.controller.AuthControllerMeIntegrationTest.registerAndLogin(AuthControllerMeIntegrationTest.java:63)
+	at com.innovatepam.auth.controller.AuthControllerMeIntegrationTest.getMe_MultipleTimes_ReturnsSameUserInfo(AuthControllerMeIntegrationTest.java:158)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1597)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1597)
+
+com.innovatepam.auth.controller.AuthControllerMeIntegrationTest.getMe_WithEvaluatorAdminRole_ReturnsCorrectRole -- Time elapsed: 0.041 s <<< ERROR!
+java.lang.NullPointerException: Cannot invoke "com.fasterxml.jackson.databind.JsonNode.asText()" because the return value of "com.fasterxml.jackson.databind.JsonNode.get(String)" is null
+	at com.innovatepam.auth.controller.AuthControllerMeIntegrationTest.registerAndLogin(AuthControllerMeIntegrationTest.java:63)
+	at com.innovatepam.auth.controller.AuthControllerMeIntegrationTest.getMe_WithEvaluatorAdminRole_ReturnsCorrectRole(AuthControllerMeIntegrationTest.java:112)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1597)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1597)
+
+com.innovatepam.auth.controller.AuthControllerMeIntegrationTest.getMe_WithSecondEvaluatorAdminRole_ReturnsCorrectRole -- Time elapsed: 0.036 s <<< ERROR!
+java.lang.NullPointerException: Cannot invoke "com.fasterxml.jackson.databind.JsonNode.asText()" because the return value of "com.fasterxml.jackson.databind.JsonNode.get(String)" is null
+	at com.innovatepam.auth.controller.AuthControllerMeIntegrationTest.registerAndLogin(AuthControllerMeIntegrationTest.java:63)
+	at com.innovatepam.auth.controller.AuthControllerMeIntegrationTest.getMe_WithSecondEvaluatorAdminRole_ReturnsCorrectRole(AuthControllerMeIntegrationTest.java:125)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1597)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1597)
+
+com.innovatepam.auth.controller.AuthControllerMeIntegrationTest.getMe_WithValidToken_ReturnsUserInfo -- Time elapsed: 0.037 s <<< ERROR!
+java.lang.NullPointerException: Cannot invoke "com.fasterxml.jackson.databind.JsonNode.asText()" because the return value of "com.fasterxml.jackson.databind.JsonNode.get(String)" is null
+	at com.innovatepam.auth.controller.AuthControllerMeIntegrationTest.registerAndLogin(AuthControllerMeIntegrationTest.java:63)
+	at com.innovatepam.auth.controller.AuthControllerMeIntegrationTest.getMe_WithValidToken_ReturnsUserInfo(AuthControllerMeIntegrationTest.java:69)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1597)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1597)
+
+com.innovatepam.auth.controller.AuthControllerMeIntegrationTest.getMe_WithMalformedAuthorizationHeader_ReturnsUnauthorized -- Time elapsed: 0.038 s <<< ERROR!
+java.lang.NullPointerException: Cannot invoke "com.fasterxml.jackson.databind.JsonNode.asText()" because the return value of "com.fasterxml.jackson.databind.JsonNode.get(String)" is null
+	at com.innovatepam.auth.controller.AuthControllerMeIntegrationTest.registerAndLogin(AuthControllerMeIntegrationTest.java:63)
+	at com.innovatepam.auth.controller.AuthControllerMeIntegrationTest.getMe_WithMalformedAuthorizationHeader_ReturnsUnauthorized(AuthControllerMeIntegrationTest.java:101)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1597)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1597)
+

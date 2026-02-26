@@ -11,10 +11,10 @@ import com.innovatepam.idea.model.IdeaStatus;
  * Validates status transitions for ideas following the defined workflow.
  * 
  * Valid transitions:
- * - SUBMITTED → UNDER_REVIEW
- * - SUBMITTED → REJECTED (direct rejection allowed)
- * - UNDER_REVIEW → ACCEPTED
- * - UNDER_REVIEW → REJECTED
+ * - SUBMITTED → UNDER_REVIEW, ACCEPTED, REJECTED
+ * - UNDER_REVIEW → ACCEPTED, REJECTED
+ * - ACCEPTED → (none, terminal state)
+ * - REJECTED → (none, terminal state)
  */
 public class IdeaStatusValidator {
     
@@ -22,7 +22,7 @@ public class IdeaStatusValidator {
     
     static {
         ALLOWED_TRANSITIONS.put(IdeaStatus.SUBMITTED, 
-            EnumSet.of(IdeaStatus.UNDER_REVIEW, IdeaStatus.REJECTED));
+            EnumSet.of(IdeaStatus.UNDER_REVIEW, IdeaStatus.ACCEPTED, IdeaStatus.REJECTED));
         ALLOWED_TRANSITIONS.put(IdeaStatus.UNDER_REVIEW, 
             EnumSet.of(IdeaStatus.ACCEPTED, IdeaStatus.REJECTED));
         ALLOWED_TRANSITIONS.put(IdeaStatus.ACCEPTED, EnumSet.noneOf(IdeaStatus.class));
@@ -64,12 +64,12 @@ public class IdeaStatusValidator {
     
     /**
      * Checks if a comment is required for the given status transition.
-     * Comment is mandatory when transitioning to REJECTED status.
+     * Comment is mandatory when transitioning to ACCEPTED or REJECTED status.
      * 
      * @param newStatus The target status
      * @return true if comment is required, false otherwise
      */
     public static boolean isCommentRequired(IdeaStatus newStatus) {
-        return newStatus == IdeaStatus.REJECTED;
+        return newStatus == IdeaStatus.ACCEPTED || newStatus == IdeaStatus.REJECTED;
     }
 }

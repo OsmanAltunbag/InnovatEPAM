@@ -27,19 +27,29 @@ public class IdeaExceptionHandler {
     }
 
     @ExceptionHandler(InvalidStatusTransitionException.class)
-    public ResponseEntity<InvalidStatusTransitionErrorResponse> handleInvalidStatusTransition(
+    public ResponseEntity<ValidationErrorResponse> handleInvalidStatusTransition(
         InvalidStatusTransitionException ex, 
         HttpServletRequest request
     ) {
-        InvalidStatusTransitionErrorResponse response = new InvalidStatusTransitionErrorResponse(
-            HttpStatus.CONFLICT.value(),
-            ex.getMessage(),
+        Map<String, String> errors = new HashMap<>();
+        
+        // For transition-specific errors, add current/target status details
+        if (ex.getCurrentStatus() != null && ex.getTargetStatus() != null) {
+            errors.put("newStatus", "Invalid status transition from " + ex.getCurrentStatus().name() + 
+                                   " to " + ex.getTargetStatus().name());
+        } else {
+            // For message-based errors (e.g., missing comment requirement)
+            errors.put("statusTransition", ex.getMessage());
+        }
+        
+        ValidationErrorResponse response = new ValidationErrorResponse(
+            HttpStatus.BAD_REQUEST.value(),
+            "Validation failed",
             OffsetDateTime.now().toString(),
             request.getRequestURI(),
-            ex.getCurrentStatus() != null ? ex.getCurrentStatus().name() : null,
-            ex.getTargetStatus() != null ? ex.getTargetStatus().name() : null
+            errors
         );
-        return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
     }
 
     @ExceptionHandler(InvalidFileException.class)
@@ -87,7 +97,6 @@ public class IdeaExceptionHandler {
     public ResponseEntity<ErrorResponse> handleConstraintViolation(ConstraintViolationException ex, HttpServletRequest request) {
         return buildResponse(HttpStatus.BAD_REQUEST, ex.getMessage(), request.getRequestURI());
     }
-
     private ResponseEntity<ErrorResponse> buildResponse(HttpStatus status, String message, String path) {
         ErrorResponse response = new ErrorResponse(
             status.value(),
@@ -97,15 +106,6 @@ public class IdeaExceptionHandler {
         );
         return ResponseEntity.status(status).body(response);
     }
-
-    public record InvalidStatusTransitionErrorResponse(
-        int status,
-        String message,
-        String timestamp,
-        String path,
-        String currentStatus,
-        String attemptedStatus
-    ) {}
 
     public record ValidationErrorResponse(
         int status,

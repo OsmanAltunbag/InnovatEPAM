@@ -1,4 +1,40 @@
 -------------------------------------------------------------------------------
 Test set: com.innovatepam.idea.util.IdeaStatusValidatorTest
 -------------------------------------------------------------------------------
-Tests run: 23, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.015 s -- in com.innovatepam.idea.util.IdeaStatusValidatorTest
+Tests run: 23, Failures: 3, Errors: 0, Skipped: 0, Time elapsed: 0.023 s <<< FAILURE! -- in com.innovatepam.idea.util.IdeaStatusValidatorTest
+com.innovatepam.idea.util.IdeaStatusValidatorTest.testGetAllowedTransitionsFromSubmitted -- Time elapsed: 0.002 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: SUBMITTED should have 2 allowed transitions ==> expected: <2> but was: <3>
+	at org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:151)
+	at org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:132)
+	at org.junit.jupiter.api.AssertEquals.failNotEqual(AssertEquals.java:197)
+	at org.junit.jupiter.api.AssertEquals.assertEquals(AssertEquals.java:150)
+	at org.junit.jupiter.api.Assertions.assertEquals(Assertions.java:563)
+	at com.innovatepam.idea.util.IdeaStatusValidatorTest.testGetAllowedTransitionsFromSubmitted(IdeaStatusValidatorTest.java:101)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1597)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1597)
+
+com.innovatepam.idea.util.IdeaStatusValidatorTest.testIsCommentNotRequiredForAccepted -- Time elapsed: 0 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: Comment should not be required for ACCEPTED ==> expected: <false> but was: <true>
+	at org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:151)
+	at org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:132)
+	at org.junit.jupiter.api.AssertFalse.failNotFalse(AssertFalse.java:63)
+	at org.junit.jupiter.api.AssertFalse.assertFalse(AssertFalse.java:36)
+	at org.junit.jupiter.api.Assertions.assertFalse(Assertions.java:239)
+	at com.innovatepam.idea.util.IdeaStatusValidatorTest.testIsCommentNotRequiredForAccepted(IdeaStatusValidatorTest.java:144)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1597)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1597)
+
+com.innovatepam.idea.util.IdeaStatusValidatorTest.testSubmittedToAccepted -- Time elapsed: 0 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: SUBMITTED → ACCEPTED should be invalid (must go through review) ==> expected: <false> but was: <true>
+	at org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:151)
+	at org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:132)
+	at org.junit.jupiter.api.AssertFalse.failNotFalse(AssertFalse.java:63)
+	at org.junit.jupiter.api.AssertFalse.assertFalse(AssertFalse.java:36)
+	at org.junit.jupiter.api.Assertions.assertFalse(Assertions.java:239)
+	at com.innovatepam.idea.util.IdeaStatusValidatorTest.testSubmittedToAccepted(IdeaStatusValidatorTest.java:25)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1597)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1597)
+

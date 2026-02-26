@@ -36,7 +36,6 @@ com\innovatepam\idea\model\IdeaStatus.class
 com\innovatepam\idea\service\IdeaService.class
 com\innovatepam\idea\exception\InvalidStatusTransitionException.class
 com\innovatepam\idea\dto\PageResponse$PageableInfo.class
-com\innovatepam\idea\exception\IdeaExceptionHandler$InvalidStatusTransitionErrorResponse.class
 com\innovatepam\idea\dto\FileMetadataResponse.class
 com\innovatepam\auth\security\JwtAuthenticationFilter.class
 com\innovatepam\idea\dto\IdeaDetailResponse.class

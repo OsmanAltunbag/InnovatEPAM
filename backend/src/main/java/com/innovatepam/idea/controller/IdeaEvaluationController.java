@@ -1,20 +1,8 @@
 package com.innovatepam.idea.controller;
 
-import com.innovatepam.auth.model.User;
-import com.innovatepam.auth.repository.UserRepository;
-import com.innovatepam.idea.dto.AddCommentRequest;
-import com.innovatepam.idea.dto.EvaluationHistoryResponse;
-import com.innovatepam.idea.dto.IdeaEvaluationResponse;
-import com.innovatepam.idea.dto.IdeaResponse;
-import com.innovatepam.idea.dto.UpdateIdeaStatusRequest;
-import com.innovatepam.idea.exception.UnauthorizedAccessException;
-import com.innovatepam.idea.model.Idea;
-import com.innovatepam.idea.model.IdeaEvaluation;
-import com.innovatepam.idea.service.IdeaEvaluationService;
-import com.innovatepam.idea.service.IdeaService;
-import jakarta.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -26,6 +14,20 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.innovatepam.auth.model.User;
+import com.innovatepam.auth.repository.UserRepository;
+import com.innovatepam.idea.dto.AddCommentRequest;
+import com.innovatepam.idea.dto.EvaluationHistoryResponse;
+import com.innovatepam.idea.dto.IdeaEvaluationResponse;
+import com.innovatepam.idea.dto.IdeaResponse;
+import com.innovatepam.idea.dto.UpdateIdeaStatusRequest;
+import com.innovatepam.idea.exception.UnauthorizedAccessException;
+import com.innovatepam.idea.model.IdeaEvaluation;
+import com.innovatepam.idea.service.IdeaEvaluationService;
+import com.innovatepam.idea.service.IdeaService;
+
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/v1/ideas")
@@ -52,8 +54,8 @@ public class IdeaEvaluationController {
         Authentication authentication
     ) {
         User evaluator = getCurrentUser(authentication);
-        Idea updatedIdea = ideaService.updateStatus(id, request.newStatus(), evaluator, request.comment());
-        return ResponseEntity.ok(IdeaResponse.from(updatedIdea));
+        IdeaResponse response = ideaService.updateStatus(id, request.newStatus(), evaluator, request.comment());
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping("/{id}/comments")

@@ -1,5 +1,6 @@
 package com.innovatepam.idea.service;
 
+import org.hibernate.Hibernate;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -15,6 +16,7 @@ import com.innovatepam.idea.model.Idea;
 import com.innovatepam.idea.model.IdeaAttachment;
 import com.innovatepam.idea.model.IdeaStatus;
 import com.innovatepam.idea.repository.IdeaRepository;
+import com.innovatepam.idea.util.IdeaStatusValidator;
 
 @Service
 public class IdeaService {
@@ -92,7 +94,7 @@ public class IdeaService {
     }
 
     @Transactional
-    public Idea updateStatus(
+    public IdeaResponse updateStatus(
         Long ideaId,
         IdeaStatus targetStatus,
         User evaluator,
@@ -106,7 +108,13 @@ public class IdeaService {
         idea.setStatus(targetStatus);
         evaluationService.addStatusEvaluation(idea, evaluator, comment, targetStatus);
 
-        return ideaRepository.save(idea);
+        Idea saved = ideaRepository.save(idea);
+        
+        // Initialize lazy collections within the transaction boundary
+        Hibernate.initialize(saved.getEvaluations());
+        
+        // Convert to DTO while still within the @Transactional boundary
+        return IdeaResponse.from(saved);
     }
 
     private void validateStatusTransition(
@@ -118,20 +126,14 @@ public class IdeaService {
             throw new InvalidStatusTransitionException("Status is required");
         }
 
-        if (currentStatus == IdeaStatus.SUBMITTED) {
-            if (targetStatus != IdeaStatus.UNDER_REVIEW && targetStatus != IdeaStatus.REJECTED) {
-                throw new InvalidStatusTransitionException(currentStatus, targetStatus);
-            }
-        } else if (currentStatus == IdeaStatus.UNDER_REVIEW) {
-            if (targetStatus != IdeaStatus.ACCEPTED && targetStatus != IdeaStatus.REJECTED) {
-                throw new InvalidStatusTransitionException(currentStatus, targetStatus);
-            }
-        } else {
+        if (!IdeaStatusValidator.isValidTransition(currentStatus, targetStatus)) {
             throw new InvalidStatusTransitionException(currentStatus, targetStatus);
         }
 
-        if (targetStatus == IdeaStatus.REJECTED && isBlank(comment)) {
-            throw new InvalidStatusTransitionException("Comment required when rejecting an idea");
+        if (IdeaStatusValidator.isCommentRequired(targetStatus) && isBlank(comment)) {
+            throw new InvalidStatusTransitionException(
+                "Comment is required when accepting or rejecting an idea"
+            );
         }
     }
 

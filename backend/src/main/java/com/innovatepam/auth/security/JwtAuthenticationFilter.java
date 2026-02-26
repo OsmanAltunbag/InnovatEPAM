@@ -43,10 +43,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             String email = claims.getSubject();
             String role = claims.get("role", String.class);
 
+            // Sanitize role name: remove invalid characters and convert to uppercase
+            // This ensures Spring Security authority names are always valid (e.g., ROLE_ADMIN, ROLE_EVALUATOR)
+            String sanitizedRole = sanitizeRoleName(role);
+
             UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
                 email,
                 null,
-                List.of(new SimpleGrantedAuthority("ROLE_" + role.toUpperCase(Locale.ROOT)))
+                List.of(new SimpleGrantedAuthority("ROLE_" + sanitizedRole))
             );
             SecurityContextHolder.getContext().setAuthentication(authentication);
         } catch (Exception ex) {
@@ -54,5 +58,30 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
 
         filterChain.doFilter(request, response);
+    }
+
+    /**
+     * Sanitize role names to comply with Spring Security authority naming rules.
+     * Removes invalid characters (/, spaces, hyphens, etc.) and converts to uppercase.
+     * 
+     * Examples:
+     * - "submitter" → "SUBMITTER"
+     * - "admin" → "ADMIN"
+     * - "evaluator/admin" → "EVALUATOR_ADMIN" (legacy format, replaced with "/" → "_")
+     * - "user-role" → "USER_ROLE"
+     * 
+     * @param roleName Raw role name from JWT or database
+     * @return Sanitized role name suitable for Spring Security authority
+     */
+    private String sanitizeRoleName(String roleName) {
+        if (roleName == null || roleName.isEmpty()) {
+            return "USER";
+        }
+        // Remove invalid characters and convert to uppercase
+        // Valid characters: A-Z, 0-9, underscore
+        return roleName.toUpperCase(Locale.ROOT)
+            .replaceAll("[^A-Z0-9_]", "_")
+            .replaceAll("_+", "_") // Collapse multiple underscores into one
+            .replaceAll("^_|_$", ""); // Remove leading/trailing underscores
     }
 }

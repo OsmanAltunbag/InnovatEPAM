@@ -183,9 +183,9 @@ class IdeaServiceTest {
         when(ideaRepository.findById(1L)).thenReturn(Optional.of(idea));
         when(ideaRepository.save(any(Idea.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
-        Idea response = ideaService.updateStatus(1L, IdeaStatus.UNDER_REVIEW, evaluator, "Moving to review");
+        IdeaResponse response = ideaService.updateStatus(1L, IdeaStatus.UNDER_REVIEW, evaluator, "Moving to review");
 
-        assertEquals(IdeaStatus.UNDER_REVIEW, response.getStatus());
+        assertEquals(IdeaStatus.UNDER_REVIEW, response.status());
 
         ArgumentCaptor<Idea> captor = ArgumentCaptor.forClass(Idea.class);
         verify(ideaRepository).save(captor.capture());
@@ -222,9 +222,9 @@ class IdeaServiceTest {
         when(ideaRepository.findById(1L)).thenReturn(Optional.of(idea));
         when(ideaRepository.save(any(Idea.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
-        Idea response = ideaService.updateStatus(1L, IdeaStatus.UNDER_REVIEW, submitter, "Comment");
+        IdeaResponse response = ideaService.updateStatus(1L, IdeaStatus.UNDER_REVIEW, submitter, "Comment");
 
-        assertEquals(IdeaStatus.UNDER_REVIEW, response.getStatus());
+        assertEquals(IdeaStatus.UNDER_REVIEW, response.status());
         verify(ideaRepository).save(any(Idea.class));
     }
 

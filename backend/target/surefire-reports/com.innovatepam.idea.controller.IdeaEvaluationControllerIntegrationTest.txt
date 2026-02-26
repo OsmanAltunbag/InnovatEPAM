@@ -1,0 +1,38 @@
+-------------------------------------------------------------------------------
+Test set: com.innovatepam.idea.controller.IdeaEvaluationControllerIntegrationTest
+-------------------------------------------------------------------------------
+Tests run: 17, Failures: 3, Errors: 0, Skipped: 0, Time elapsed: 22.04 s <<< FAILURE! -- in com.innovatepam.idea.controller.IdeaEvaluationControllerIntegrationTest
+com.innovatepam.idea.controller.IdeaEvaluationControllerIntegrationTest.testAddCommentByEvaluator -- Time elapsed: 1.283 s <<< FAILURE!
+java.lang.AssertionError: No value at JSON path "$.evaluator"
+	at org.springframework.test.util.JsonPathExpectationsHelper.evaluateJsonPath(JsonPathExpectationsHelper.java:302)
+	at org.springframework.test.util.JsonPathExpectationsHelper.assertValue(JsonPathExpectationsHelper.java:73)
+	at org.springframework.test.web.servlet.result.JsonPathResultMatchers.lambda$value$0(JsonPathResultMatchers.java:87)
+	at org.springframework.test.web.servlet.MockMvc$1.andExpect(MockMvc.java:214)
+	at com.innovatepam.idea.controller.IdeaEvaluationControllerIntegrationTest.testAddCommentByEvaluator(IdeaEvaluationControllerIntegrationTest.java:271)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1597)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1597)
+Caused by: com.jayway.jsonpath.PathNotFoundException: No results for path: $['evaluator']
+
+com.innovatepam.idea.controller.IdeaEvaluationControllerIntegrationTest.testUpdateIdeaStatusWithInvalidTransition -- Time elapsed: 1.292 s <<< FAILURE!
+java.lang.AssertionError: Status expected:<409> but was:<200>
+	at org.springframework.test.util.AssertionErrors.fail(AssertionErrors.java:59)
+	at org.springframework.test.util.AssertionErrors.assertEquals(AssertionErrors.java:122)
+	at org.springframework.test.web.servlet.result.StatusResultMatchers.lambda$matcher$9(StatusResultMatchers.java:637)
+	at org.springframework.test.web.servlet.MockMvc$1.andExpect(MockMvc.java:214)
+	at com.innovatepam.idea.controller.IdeaEvaluationControllerIntegrationTest.testUpdateIdeaStatusWithInvalidTransition(IdeaEvaluationControllerIntegrationTest.java:216)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1597)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1597)
+
+com.innovatepam.idea.controller.IdeaEvaluationControllerIntegrationTest.testUpdateIdeaStatusWithCommentRequired -- Time elapsed: 1.297 s <<< FAILURE!
+java.lang.AssertionError: Status expected:<409> but was:<400>
+	at org.springframework.test.util.AssertionErrors.fail(AssertionErrors.java:59)
+	at org.springframework.test.util.AssertionErrors.assertEquals(AssertionErrors.java:122)
+	at org.springframework.test.web.servlet.result.StatusResultMatchers.lambda$matcher$9(StatusResultMatchers.java:637)
+	at org.springframework.test.web.servlet.MockMvc$1.andExpect(MockMvc.java:214)
+	at com.innovatepam.idea.controller.IdeaEvaluationControllerIntegrationTest.testUpdateIdeaStatusWithCommentRequired(IdeaEvaluationControllerIntegrationTest.java:236)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1597)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1597)
+

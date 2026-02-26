@@ -17,6 +17,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 
 @Entity
 @Table(name = "idea_evaluations")
@@ -25,7 +26,7 @@ public class IdeaEvaluation {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "idea_id", nullable = false)
     private Idea idea;
 
@@ -34,6 +35,7 @@ public class IdeaEvaluation {
     private User evaluator;
 
     @NotBlank(message = "Comment is required")
+    @Size(max = 5000, message = "Comment cannot exceed 5000 characters")
     @Column(nullable = false, columnDefinition = "TEXT")
     private String comment;
 
@@ -41,7 +43,7 @@ public class IdeaEvaluation {
     @Column(name = "status_snapshot", length = 50)
     private IdeaStatus statusSnapshot;
 
-    @Column(name = "created_at", nullable = false)
+    @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
     @PrePersist
@@ -95,7 +97,5 @@ public class IdeaEvaluation {
         return createdAt;
     }
 
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
+    // No setter for createdAt to enforce immutability
 }
