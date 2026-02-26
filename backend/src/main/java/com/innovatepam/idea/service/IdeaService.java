@@ -1,17 +1,20 @@
 package com.innovatepam.idea.service;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
+
 import com.innovatepam.auth.model.User;
+import com.innovatepam.idea.dto.IdeaDetailResponse;
+import com.innovatepam.idea.dto.IdeaResponse;
 import com.innovatepam.idea.exception.IdeaNotFoundException;
 import com.innovatepam.idea.exception.InvalidStatusTransitionException;
 import com.innovatepam.idea.model.Idea;
 import com.innovatepam.idea.model.IdeaAttachment;
 import com.innovatepam.idea.model.IdeaStatus;
 import com.innovatepam.idea.repository.IdeaRepository;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
 @Service
 public class IdeaService {
@@ -30,7 +33,7 @@ public class IdeaService {
     }
 
     @Transactional
-    public Idea createIdea(
+    public IdeaResponse createIdea(
         String title,
         String description,
         String category,
@@ -52,7 +55,7 @@ public class IdeaService {
             saved = ideaRepository.save(saved);
         }
 
-        return saved;
+        return IdeaResponse.from(saved);
     }
 
     @Transactional(readOnly = true)
@@ -62,23 +65,30 @@ public class IdeaService {
     }
 
     @Transactional(readOnly = true)
-    public Page<Idea> getIdeas(Pageable pageable) {
-        return ideaRepository.findAll(pageable);
+    public IdeaDetailResponse getIdeaDetailById(Long ideaId) {
+        Idea idea = ideaRepository.findById(ideaId)
+            .orElseThrow(() -> new IdeaNotFoundException(ideaId));
+        return IdeaDetailResponse.from(idea);
     }
 
     @Transactional(readOnly = true)
-    public Page<Idea> getIdeasByStatus(IdeaStatus status, Pageable pageable) {
-        return ideaRepository.findByStatus(status, pageable);
+    public Page<IdeaResponse> getIdeas(Pageable pageable) {
+        return ideaRepository.findAll(pageable).map(IdeaResponse::from);
     }
 
     @Transactional(readOnly = true)
-    public Page<Idea> getIdeasByCategory(String category, Pageable pageable) {
-        return ideaRepository.findByCategory(category, pageable);
+    public Page<IdeaResponse> getIdeasByStatus(IdeaStatus status, Pageable pageable) {
+        return ideaRepository.findByStatus(status, pageable).map(IdeaResponse::from);
     }
 
     @Transactional(readOnly = true)
-    public Page<Idea> getIdeasByStatusAndCategory(IdeaStatus status, String category, Pageable pageable) {
-        return ideaRepository.findByCategoryAndStatus(category, status, pageable);
+    public Page<IdeaResponse> getIdeasByCategory(String category, Pageable pageable) {
+        return ideaRepository.findByCategory(category, pageable).map(IdeaResponse::from);
+    }
+
+    @Transactional(readOnly = true)
+    public Page<IdeaResponse> getIdeasByStatusAndCategory(IdeaStatus status, String category, Pageable pageable) {
+        return ideaRepository.findByCategoryAndStatus(category, status, pageable).map(IdeaResponse::from);
     }
 
     @Transactional

@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="tr"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>User.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">InnovatEPAM Auth Service</a> &gt; <a href="index.source.html" class="el_package">com.innovatepam.auth.model</a> &gt; <span class="el_source">User.java</span></div><h1>User.java</h1><pre class="source lang-java linenums">package com.innovatepam.auth.model;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
+import jakarta.persistence.Table;
+import java.time.LocalDateTime;
+import java.util.UUID;
+
+@Entity
+@Table(name = &quot;users&quot;)
+<span class="fc" id="L19">public class User {</span>
+    @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
+
+    @Column(unique = true, nullable = false, length = 255)
+    private String email;
+
+    @Column(name = &quot;password_hash&quot;, nullable = false, length = 255)
+    private String passwordHash;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = &quot;role_id&quot;, nullable = false)
+    private Role role;
+
+    @Column(name = &quot;is_locked&quot;, nullable = false)
+    private boolean locked;
+
+    @Column(name = &quot;locked_until&quot;)
+    private LocalDateTime lockedUntil;
+
+    @Column(name = &quot;created_at&quot;, nullable = false)
+    private LocalDateTime createdAt;
+
+    @Column(name = &quot;updated_at&quot;, nullable = false)
+    private LocalDateTime updatedAt;
+
+    @PrePersist
+    public void onCreate() {
+<span class="fc" id="L48">        LocalDateTime now = LocalDateTime.now();</span>
+<span class="fc" id="L49">        createdAt = now;</span>
+<span class="fc" id="L50">        updatedAt = now;</span>
+<span class="fc" id="L51">    }</span>
+
+    @PreUpdate
+    public void onUpdate() {
+<span class="fc" id="L55">        updatedAt = LocalDateTime.now();</span>
+<span class="fc" id="L56">    }</span>
+
+    public boolean isAccountLocked() {
+<span class="fc bfc" id="L59" title="All 6 branches covered.">        return locked &amp;&amp; lockedUntil != null &amp;&amp; LocalDateTime.now().isBefore(lockedUntil);</span>
+    }
+
+    public UUID getId() {
+<span class="fc" id="L63">        return id;</span>
+    }
+
+    public void setId(UUID id) {
+<span class="fc" id="L67">        this.id = id;</span>
+<span class="fc" id="L68">    }</span>
+
+    public String getEmail() {
+<span class="fc" id="L71">        return email;</span>
+    }
+
+    public void setEmail(String email) {
+<span class="fc" id="L75">        this.email = email;</span>
+<span class="fc" id="L76">    }</span>
+
+    public String getPasswordHash() {
+<span class="fc" id="L79">        return passwordHash;</span>
+    }
+
+    public void setPasswordHash(String passwordHash) {
+<span class="fc" id="L83">        this.passwordHash = passwordHash;</span>
+<span class="fc" id="L84">    }</span>
+
+    public Role getRole() {
+<span class="fc" id="L87">        return role;</span>
+    }
+
+    public void setRole(Role role) {
+<span class="fc" id="L91">        this.role = role;</span>
+<span class="fc" id="L92">    }</span>
+
+    public boolean isLocked() {
+<span class="fc" id="L95">        return locked;</span>
+    }
+
+    public void setLocked(boolean locked) {
+<span class="fc" id="L99">        this.locked = locked;</span>
+<span class="fc" id="L100">    }</span>
+
+    public LocalDateTime getLockedUntil() {
+<span class="fc" id="L103">        return lockedUntil;</span>
+    }
+
+    public void setLockedUntil(LocalDateTime lockedUntil) {
+<span class="fc" id="L107">        this.lockedUntil = lockedUntil;</span>
+<span class="fc" id="L108">    }</span>
+
+    public LocalDateTime getCreatedAt() {
+<span class="fc" id="L111">        return createdAt;</span>
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+<span class="fc" id="L115">        this.createdAt = createdAt;</span>
+<span class="fc" id="L116">    }</span>
+
+    public LocalDateTime getUpdatedAt() {
+<span class="fc" id="L119">        return updatedAt;</span>
+    }
+
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+<span class="nc" id="L123">        this.updatedAt = updatedAt;</span>
+<span class="nc" id="L124">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

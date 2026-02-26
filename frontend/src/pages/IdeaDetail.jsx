@@ -8,13 +8,15 @@ import { formatFileSize } from "../utils/fileUploadUtils";
 export default function IdeaDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { selectedIdea, fetchIdeaById, downloadAttachment, loading, error } = useIdeas();
+  const { selectedIdea, fetchIdeaById, downloadAttachment, loading, error } = useIdeas({
+    autoLoad: false
+  });
 
   useEffect(() => {
     if (id) {
       fetchIdeaById(id);
     }
-  }, [id]);
+  }, [fetchIdeaById, id]);
 
   const formatDate = (dateString) => {
     const date = new Date(dateString);

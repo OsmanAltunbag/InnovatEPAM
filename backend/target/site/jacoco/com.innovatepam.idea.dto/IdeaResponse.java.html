@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="tr"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>IdeaResponse.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">InnovatEPAM Auth Service</a> &gt; <a href="index.source.html" class="el_package">com.innovatepam.idea.dto</a> &gt; <span class="el_source">IdeaResponse.java</span></div><h1>IdeaResponse.java</h1><pre class="source lang-java linenums">package com.innovatepam.idea.dto;
+
+import com.innovatepam.idea.model.Idea;
+import com.innovatepam.idea.model.IdeaStatus;
+import java.time.LocalDateTime;
+
+<span class="fc" id="L7">public record IdeaResponse(</span>
+    Long id,
+    String title,
+    String category,
+    IdeaStatus status,
+    String submitterName,
+    LocalDateTime createdAt,
+    boolean hasAttachment,
+    int evaluationCount
+) {
+    public static IdeaResponse from(Idea idea) {
+<span class="fc" id="L18">        return new IdeaResponse(</span>
+<span class="fc" id="L19">            idea.getId(),</span>
+<span class="fc" id="L20">            idea.getTitle(),</span>
+<span class="fc" id="L21">            idea.getCategory(),</span>
+<span class="fc" id="L22">            idea.getStatus(),</span>
+<span class="fc" id="L23">            idea.getSubmitter().getEmail(),</span>
+<span class="fc" id="L24">            idea.getCreatedAt(),</span>
+<span class="fc bfc" id="L25" title="All 2 branches covered.">            idea.getAttachment() != null,</span>
+<span class="pc bpc" id="L26" title="1 of 2 branches missed.">            idea.getEvaluations() != null ? idea.getEvaluations().size() : 0</span>
+        );
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

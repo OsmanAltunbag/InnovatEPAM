@@ -79,6 +79,9 @@ export const addIdeaComment = async (ideaId, comment) => {
   return response.data;
 };
 
+// Alias for backward compatibility
+export const addComment = addIdeaComment;
+
 /**
  * Get evaluation history for an idea
  * @param {number} ideaId - Idea ID
@@ -101,11 +104,11 @@ export const downloadAttachment = async (ideaId, attachmentId, filename) => {
     responseType: "blob"
   });
   
-  // Create blob link to download
-  const url = window.URL.createObjectURL(new Blob([response.data]));
+  // response.data is already a Blob, use it directly
+  const url = window.URL.createObjectURL(response.data);
   const link = document.createElement("a");
   link.href = url;
-  link.setAttribute("download", filename);
+  link.setAttribute("download", filename || "attachment");
   document.body.appendChild(link);
   link.click();
   link.parentNode.removeChild(link);

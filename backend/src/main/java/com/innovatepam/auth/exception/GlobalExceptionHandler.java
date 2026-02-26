@@ -1,8 +1,7 @@
 package com.innovatepam.auth.exception;
 
-import com.innovatepam.auth.dto.ErrorResponse;
-import jakarta.servlet.http.HttpServletRequest;
 import java.time.OffsetDateTime;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -11,7 +10,11 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.server.ResponseStatusException;
 
-@RestControllerAdvice
+import com.innovatepam.auth.dto.ErrorResponse;
+
+import jakarta.servlet.http.HttpServletRequest;
+
+@RestControllerAdvice(basePackages = "com.innovatepam.auth")
 public class GlobalExceptionHandler {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorResponse> handleValidation(MethodArgumentNotValidException ex, HttpServletRequest request) {
@@ -32,6 +35,10 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleUnexpected(Exception ex, HttpServletRequest request) {
+        System.err.println("[ERROR] Unhandled exception:");
+        System.err.println("Exception type: " + ex.getClass().getName());
+        System.err.println("Message: " + ex.getMessage());
+        ex.printStackTrace();
         return buildResponse(HttpStatus.INTERNAL_SERVER_ERROR, "Unexpected server error", request.getRequestURI());
     }
 

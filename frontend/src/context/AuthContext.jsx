@@ -1,4 +1,4 @@
-import React, { createContext, useCallback, useMemo, useState } from "react";
+import React, { createContext, useCallback, useEffect, useMemo, useState } from "react";
 import { clearToken, getToken, setToken } from "../utils/tokenStorage";
 
 const AuthContext = createContext(null);
@@ -17,7 +17,22 @@ const decodeJwt = (token) => {
 };
 
 export const AuthProvider = ({ children }) => {
+  // Initialize token from localStorage synchronously
   const [token, setTokenState] = useState(getToken());
+  // Start as false - will be set to true in useEffect after initialization
+  const [isSessionReady, setIsSessionReady] = useState(false);
+
+  // Ensure token and isSessionReady states are fully initialized from localStorage
+  // before the rest of the app tries to make authorized requests
+  useEffect(() => {
+    // Synchronously load token from localStorage if not already loaded
+    const storedToken = getToken();
+    if (storedToken !== token) {
+      setTokenState(storedToken);
+    }
+    // Mark session as ready after localStorage initialization is complete
+    setIsSessionReady(true);
+  }, []);
 
   const user = useMemo(() => {
     if (!token) {
@@ -50,9 +65,10 @@ export const AuthProvider = ({ children }) => {
       user,
       signIn,
       signOut,
-      isAuthenticated: Boolean(token)
+      isAuthenticated: Boolean(token),
+      isSessionReady
     }),
-    [token, user, signIn, signOut]
+    [token, user, signIn, signOut, isSessionReady]
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

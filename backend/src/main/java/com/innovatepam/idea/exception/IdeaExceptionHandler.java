@@ -1,11 +1,9 @@
 package com.innovatepam.idea.exception;
 
-import com.innovatepam.auth.dto.ErrorResponse;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.validation.ConstraintViolationException;
 import java.time.OffsetDateTime;
 import java.util.HashMap;
 import java.util.Map;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
@@ -14,6 +12,11 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
+
+import com.innovatepam.auth.dto.ErrorResponse;
+
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.ConstraintViolationException;
 
 @RestControllerAdvice(basePackages = "com.innovatepam.idea")
 public class IdeaExceptionHandler {
@@ -29,14 +32,14 @@ public class IdeaExceptionHandler {
         HttpServletRequest request
     ) {
         InvalidStatusTransitionErrorResponse response = new InvalidStatusTransitionErrorResponse(
-            HttpStatus.BAD_REQUEST.value(),
+            HttpStatus.CONFLICT.value(),
             ex.getMessage(),
             OffsetDateTime.now().toString(),
             request.getRequestURI(),
             ex.getCurrentStatus() != null ? ex.getCurrentStatus().name() : null,
             ex.getTargetStatus() != null ? ex.getTargetStatus().name() : null
         );
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(response);
     }
 
     @ExceptionHandler(InvalidFileException.class)

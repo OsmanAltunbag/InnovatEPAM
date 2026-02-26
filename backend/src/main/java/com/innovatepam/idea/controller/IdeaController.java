@@ -1,17 +1,5 @@
 package com.innovatepam.idea.controller;
 
-import com.innovatepam.auth.model.User;
-import com.innovatepam.auth.repository.UserRepository;
-import com.innovatepam.idea.dto.IdeaDetailResponse;
-import com.innovatepam.idea.dto.IdeaResponse;
-import com.innovatepam.idea.dto.PageResponse;
-import com.innovatepam.idea.exception.UnauthorizedAccessException;
-import com.innovatepam.idea.model.Idea;
-import com.innovatepam.idea.model.IdeaStatus;
-import com.innovatepam.idea.service.FileStorageService;
-import com.innovatepam.idea.service.IdeaService;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
 import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -31,6 +19,20 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+
+import com.innovatepam.auth.model.User;
+import com.innovatepam.auth.repository.UserRepository;
+import com.innovatepam.idea.dto.IdeaDetailResponse;
+import com.innovatepam.idea.dto.IdeaResponse;
+import com.innovatepam.idea.dto.PageResponse;
+import com.innovatepam.idea.exception.UnauthorizedAccessException;
+import com.innovatepam.idea.model.Idea;
+import com.innovatepam.idea.model.IdeaStatus;
+import com.innovatepam.idea.service.FileStorageService;
+import com.innovatepam.idea.service.IdeaService;
+
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 
 @RestController
 @RequestMapping("/api/v1/ideas")
@@ -60,8 +62,8 @@ public class IdeaController {
         Authentication authentication
     ) {
         User submitter = getCurrentUser(authentication);
-        Idea idea = ideaService.createIdea(title, description, category, submitter, file);
-        return ResponseEntity.status(HttpStatus.CREATED).body(IdeaResponse.from(idea));
+        IdeaResponse idea = ideaService.createIdea(title, description, category, submitter, file);
+        return ResponseEntity.status(HttpStatus.CREATED).body(idea);
     }
 
     @GetMapping
@@ -73,7 +75,7 @@ public class IdeaController {
         @RequestParam(required = false) String category
     ) {
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdAt"));
-        Page<Idea> ideas;
+        Page<IdeaResponse> ideas;
 
         if (status != null && category != null) {
             ideas = ideaService.getIdeasByStatusAndCategory(status, category, pageable);
@@ -85,15 +87,14 @@ public class IdeaController {
             ideas = ideaService.getIdeas(pageable);
         }
 
-        Page<IdeaResponse> responsePage = ideas.map(IdeaResponse::from);
-        return ResponseEntity.ok(PageResponse.of(responsePage));
+        return ResponseEntity.ok(PageResponse.of(ideas));
     }
 
     @GetMapping("/{id}")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<IdeaDetailResponse> getIdeaById(@PathVariable Long id) {
-        Idea idea = ideaService.getIdeaById(id);
-        return ResponseEntity.ok(IdeaDetailResponse.from(idea));
+        IdeaDetailResponse idea = ideaService.getIdeaDetailById(id);
+        return ResponseEntity.ok(idea);
     }
 
     @GetMapping("/{ideaId}/attachments/{attachmentId}")
@@ -119,7 +120,13 @@ public class IdeaController {
 
     private User getCurrentUser(Authentication authentication) {
         String email = authentication.getName();
-        return userRepository.findByEmail(email)
-            .orElseThrow(() -> new UnauthorizedAccessException("User not found"));
+        System.out.println("[DEBUG] Looking up user with email: " + email);
+        User user = userRepository.findByEmail(email)
+            .orElseThrow(() -> {
+                System.err.println("[ERROR] User not found in database: " + email);
+                return new UnauthorizedAccessException("User not found: " + email);
+            });
+        System.out.println("[DEBUG] Found user: ID=" + user.getId() + ", Email=" + user.getEmail());
+        return user;
     }
 }

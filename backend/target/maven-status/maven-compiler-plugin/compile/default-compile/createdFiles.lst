@@ -2,11 +2,13 @@ com\innovatepam\idea\exception\InvalidFileException.class
 com\innovatepam\auth\dto\RegisterRequest.class
 com\innovatepam\idea\model\Idea.class
 com\innovatepam\auth\repository\UserRepository.class
+com\innovatepam\idea\util\FileValidator.class
 com\innovatepam\idea\exception\IdeaExceptionHandler$ValidationErrorResponse.class
 com\innovatepam\idea\exception\IdeaExceptionHandler.class
 com\innovatepam\auth\dto\AuthResponse.class
 com\innovatepam\auth\security\JwtService.class
 com\innovatepam\idea\repository\IdeaRepository.class
+com\innovatepam\idea\util\FileValidator$ValidationResult.class
 com\innovatepam\idea\dto\UpdateIdeaStatusRequest.class
 com\innovatepam\idea\service\FileStorageService.class
 com\innovatepam\auth\model\User.class
@@ -42,6 +44,7 @@ com\innovatepam\auth\service\RegistrationService.class
 com\innovatepam\idea\controller\IdeaEvaluationController.class
 com\innovatepam\idea\exception\UnauthorizedAccessException.class
 com\innovatepam\auth\service\RoleService.class
+com\innovatepam\idea\util\IdeaStatusValidator.class
 com\innovatepam\idea\dto\AddCommentRequest.class
 com\innovatepam\auth\repository\RoleRepository.class
 com\innovatepam\idea\model\FileType.class

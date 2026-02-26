@@ -1,11 +1,16 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useIdeas } from "../hooks/useIdeas";
+import useAuth from "../hooks/useAuth";
 import { getStatusLabel, getStatusColor, IdeaStatus } from "../utils/statusUtils";
 
 export default function IdeaListing() {
   const navigate = useNavigate();
-  const { ideas, loading, error, pagination, fetchIdeas } = useIdeas();
+  const { isSessionReady, isAuthenticated } = useAuth();
+  const { ideas, loading, error, pagination, fetchIdeas } = useIdeas({
+    autoLoad: false
+  });
+  const hasLoggedInitialFetch = useRef(false);
   const [filters, setFilters] = useState({
     status: "",
     category: "",
@@ -14,8 +19,23 @@ export default function IdeaListing() {
   });
 
   useEffect(() => {
+    if (!isSessionReady || !isAuthenticated) {
+      return;
+    }
+
+    if (!hasLoggedInitialFetch.current) {
+      console.log("IdeaListing: fetching ideas on mount", {
+        status: filters.status,
+        category: filters.category,
+        page: filters.page,
+        size: filters.size
+      });
+      hasLoggedInitialFetch.current = true;
+    }
+
+    // Fetch ideas when authenticated and filters change
     fetchIdeas(filters);
-  }, [filters]);
+  }, [fetchIdeas, filters, isSessionReady, isAuthenticated]);
 
   const handleFilterChange = (key, value) => {
     setFilters(prev => ({ ...prev, [key]: value, page: 0 }));

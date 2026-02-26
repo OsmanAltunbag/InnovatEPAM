@@ -1,5 +1,28 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, beforeAll, beforeEach, afterEach, afterAll } from 'vitest';
+import { setupServer } from 'msw/node';
+import { ideaHandlers } from './mocks/ideaHandlers';
 import * as ideaService from '../services/ideaService';
+
+// Setup MSW server for integration tests
+const server = setupServer(...ideaHandlers);
+
+const MOCK_TOKEN = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0ZXN0QGV4YW1wbGUuY29tIiwicm9sZSI6ImV2YWx1YXRvciJ9.test';
+
+beforeAll(() => server.listen());
+
+beforeEach(() => {
+  // Set JWT token in localStorage before each test
+  localStorage.clear();
+  localStorage.setItem('innovatepam.jwt', MOCK_TOKEN);
+  server.resetHandlers();
+});
+
+afterEach(() => {
+  server.resetHandlers();
+  localStorage.clear();
+});
+
+afterAll(() => server.close());
 
 describe('ideaService Integration Tests', () => {
   it('should fetch ideas with pagination', async () => {

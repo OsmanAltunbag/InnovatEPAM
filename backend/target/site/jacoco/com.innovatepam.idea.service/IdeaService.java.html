@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="tr"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>IdeaService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">InnovatEPAM Auth Service</a> &gt; <a href="index.source.html" class="el_package">com.innovatepam.idea.service</a> &gt; <span class="el_source">IdeaService.java</span></div><h1>IdeaService.java</h1><pre class="source lang-java linenums">package com.innovatepam.idea.service;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
+
+import com.innovatepam.auth.model.User;
+import com.innovatepam.idea.dto.IdeaDetailResponse;
+import com.innovatepam.idea.dto.IdeaResponse;
+import com.innovatepam.idea.exception.IdeaNotFoundException;
+import com.innovatepam.idea.exception.InvalidStatusTransitionException;
+import com.innovatepam.idea.model.Idea;
+import com.innovatepam.idea.model.IdeaAttachment;
+import com.innovatepam.idea.model.IdeaStatus;
+import com.innovatepam.idea.repository.IdeaRepository;
+
+@Service
+public class IdeaService {
+    private final IdeaRepository ideaRepository;
+    private final IdeaEvaluationService evaluationService;
+    private final FileStorageService fileStorageService;
+
+    public IdeaService(
+        IdeaRepository ideaRepository,
+        IdeaEvaluationService evaluationService,
+        FileStorageService fileStorageService
+<span class="fc" id="L29">    ) {</span>
+<span class="fc" id="L30">        this.ideaRepository = ideaRepository;</span>
+<span class="fc" id="L31">        this.evaluationService = evaluationService;</span>
+<span class="fc" id="L32">        this.fileStorageService = fileStorageService;</span>
+<span class="fc" id="L33">    }</span>
+
+    @Transactional
+    public IdeaResponse createIdea(
+        String title,
+        String description,
+        String category,
+        User submitter,
+        MultipartFile file
+    ) {
+<span class="fc" id="L43">        Idea idea = new Idea();</span>
+<span class="pc bpc" id="L44" title="1 of 2 branches missed.">        idea.setTitle(title == null ? null : title.trim());</span>
+<span class="pc bpc" id="L45" title="1 of 2 branches missed.">        idea.setDescription(description == null ? null : description.trim());</span>
+<span class="pc bpc" id="L46" title="1 of 2 branches missed.">        idea.setCategory(category == null ? null : category.trim());</span>
+<span class="fc" id="L47">        idea.setSubmitter(submitter);</span>
+<span class="fc" id="L48">        idea.setStatus(IdeaStatus.SUBMITTED);</span>
+
+<span class="fc" id="L50">        Idea saved = ideaRepository.save(idea);</span>
+
+<span class="pc bpc" id="L52" title="1 of 4 branches missed.">        if (file != null &amp;&amp; !file.isEmpty()) {</span>
+<span class="fc" id="L53">            IdeaAttachment attachment = fileStorageService.storeFile(file, saved);</span>
+<span class="fc" id="L54">            saved.setAttachment(attachment);</span>
+<span class="fc" id="L55">            saved = ideaRepository.save(saved);</span>
+        }
+
+<span class="fc" id="L58">        return IdeaResponse.from(saved);</span>
+    }
+
+    @Transactional(readOnly = true)
+    public Idea getIdeaById(Long ideaId) {
+<span class="fc" id="L63">        return ideaRepository.findById(ideaId)</span>
+<span class="fc" id="L64">            .orElseThrow(() -&gt; new IdeaNotFoundException(ideaId));</span>
+    }
+
+    @Transactional(readOnly = true)
+    public IdeaDetailResponse getIdeaDetailById(Long ideaId) {
+<span class="fc" id="L69">        Idea idea = ideaRepository.findById(ideaId)</span>
+<span class="fc" id="L70">            .orElseThrow(() -&gt; new IdeaNotFoundException(ideaId));</span>
+<span class="fc" id="L71">        return IdeaDetailResponse.from(idea);</span>
+    }
+
+    @Transactional(readOnly = true)
+    public Page&lt;IdeaResponse&gt; getIdeas(Pageable pageable) {
+<span class="fc" id="L76">        return ideaRepository.findAll(pageable).map(IdeaResponse::from);</span>
+    }
+
+    @Transactional(readOnly = true)
+    public Page&lt;IdeaResponse&gt; getIdeasByStatus(IdeaStatus status, Pageable pageable) {
+<span class="fc" id="L81">        return ideaRepository.findByStatus(status, pageable).map(IdeaResponse::from);</span>
+    }
+
+    @Transactional(readOnly = true)
+    public Page&lt;IdeaResponse&gt; getIdeasByCategory(String category, Pageable pageable) {
+<span class="nc" id="L86">        return ideaRepository.findByCategory(category, pageable).map(IdeaResponse::from);</span>
+    }
+
+    @Transactional(readOnly = true)
+    public Page&lt;IdeaResponse&gt; getIdeasByStatusAndCategory(IdeaStatus status, String category, Pageable pageable) {
+<span class="nc" id="L91">        return ideaRepository.findByCategoryAndStatus(category, status, pageable).map(IdeaResponse::from);</span>
+    }
+
+    @Transactional
+    public Idea updateStatus(
+        Long ideaId,
+        IdeaStatus targetStatus,
+        User evaluator,
+        String comment
+    ) {
+<span class="fc" id="L101">        Idea idea = ideaRepository.findById(ideaId)</span>
+<span class="pc" id="L102">            .orElseThrow(() -&gt; new IdeaNotFoundException(ideaId));</span>
+
+<span class="fc" id="L104">        validateStatusTransition(idea.getStatus(), targetStatus, comment);</span>
+
+<span class="fc" id="L106">        idea.setStatus(targetStatus);</span>
+<span class="fc" id="L107">        evaluationService.addStatusEvaluation(idea, evaluator, comment, targetStatus);</span>
+
+<span class="fc" id="L109">        return ideaRepository.save(idea);</span>
+    }
+
+    private void validateStatusTransition(
+        IdeaStatus currentStatus,
+        IdeaStatus targetStatus,
+        String comment
+    ) {
+<span class="pc bpc" id="L117" title="2 of 4 branches missed.">        if (currentStatus == null || targetStatus == null) {</span>
+<span class="nc" id="L118">            throw new InvalidStatusTransitionException(&quot;Status is required&quot;);</span>
+        }
+
+<span class="pc bpc" id="L121" title="1 of 2 branches missed.">        if (currentStatus == IdeaStatus.SUBMITTED) {</span>
+<span class="fc bfc" id="L122" title="All 4 branches covered.">            if (targetStatus != IdeaStatus.UNDER_REVIEW &amp;&amp; targetStatus != IdeaStatus.REJECTED) {</span>
+<span class="fc" id="L123">                throw new InvalidStatusTransitionException(currentStatus, targetStatus);</span>
+            }
+<span class="nc bnc" id="L125" title="All 2 branches missed.">        } else if (currentStatus == IdeaStatus.UNDER_REVIEW) {</span>
+<span class="nc bnc" id="L126" title="All 4 branches missed.">            if (targetStatus != IdeaStatus.ACCEPTED &amp;&amp; targetStatus != IdeaStatus.REJECTED) {</span>
+<span class="nc" id="L127">                throw new InvalidStatusTransitionException(currentStatus, targetStatus);</span>
+            }
+        } else {
+<span class="nc" id="L130">            throw new InvalidStatusTransitionException(currentStatus, targetStatus);</span>
+        }
+
+<span class="pc bpc" id="L133" title="1 of 4 branches missed.">        if (targetStatus == IdeaStatus.REJECTED &amp;&amp; isBlank(comment)) {</span>
+<span class="fc" id="L134">            throw new InvalidStatusTransitionException(&quot;Comment required when rejecting an idea&quot;);</span>
+        }
+<span class="fc" id="L136">    }</span>
+
+    private boolean isBlank(String value) {
+<span class="pc bpc" id="L139" title="3 of 4 branches missed.">        return value == null || value.trim().isEmpty();</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

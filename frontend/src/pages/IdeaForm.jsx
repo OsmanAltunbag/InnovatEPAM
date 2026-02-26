@@ -6,7 +6,7 @@ import FileUpload from "../components/FileUpload";
 
 export default function IdeaForm() {
   const navigate = useNavigate();
-  const { createIdea, loading, error } = useIdeas();
+  const { createIdea, loading, error } = useIdeas({ autoLoad: false });
   const { 
     file, 
     fileError, 

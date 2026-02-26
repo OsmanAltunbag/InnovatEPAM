@@ -1,11 +1,13 @@
-import { useState, useCallback } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import * as ideaService from "../services/ideaService";
+import useAuth from "./useAuth";
 
 /**
  * Custom hook for managing ideas state and operations
  * @returns {Object} Ideas state and operation functions
  */
-export const useIdeas = () => {
+export const useIdeas = ({ autoLoad = true, initialParams = {} } = {}) => {
+  const { isSessionReady, isAuthenticated, token } = useAuth();
   const [ideas, setIdeas] = useState([]);
   const [selectedIdea, setSelectedIdea] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -16,6 +18,11 @@ export const useIdeas = () => {
     totalElements: 0,
     totalPages: 0
   });
+  const initialParamsRef = useRef(initialParams);
+
+  useEffect(() => {
+    initialParamsRef.current = initialParams;
+  }, [initialParams]);
 
   /**
    * Fetch paginated list of ideas with optional filters
@@ -33,6 +40,16 @@ export const useIdeas = () => {
       setLoading(false);
     }
   }, []);
+
+  // Wrap fetchIdeas in useEffect with token/isAuthenticated dependency
+  // Do NOT call the API if the token is missing
+  useEffect(() => {
+    if (!autoLoad || !isSessionReady || !isAuthenticated || !token) {
+      return;
+    }
+
+    fetchIdeas(initialParamsRef.current);
+  }, [autoLoad, fetchIdeas, isSessionReady, isAuthenticated, token]);
 
   /**
    * Fetch a single idea by ID

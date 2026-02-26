@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="tr"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Idea.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">InnovatEPAM Auth Service</a> &gt; <a href="index.source.html" class="el_package">com.innovatepam.idea.model</a> &gt; <span class="el_source">Idea.java</span></div><h1>Idea.java</h1><pre class="source lang-java linenums">package com.innovatepam.idea.model;
+
+import com.innovatepam.auth.model.User;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.OrderBy;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
+import jakarta.persistence.Table;
+import jakarta.persistence.Version;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+
+@Entity
+@Table(name = &quot;ideas&quot;)
+<span class="fc" id="L31">public class Idea {</span>
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @NotBlank(message = &quot;Title is required&quot;)
+    @Size(min = 1, max = 255, message = &quot;Title must be between 1 and 255 characters&quot;)
+    @Column(nullable = false, length = 255)
+    private String title;
+
+    @NotBlank(message = &quot;Description is required&quot;)
+    @Column(nullable = false, columnDefinition = &quot;TEXT&quot;)
+    private String description;
+
+    @NotNull(message = &quot;Category is required&quot;)
+    @Column(nullable = false, length = 50)
+    private String category;
+
+<span class="fc" id="L49">    @NotNull(message = &quot;Status is required&quot;)</span>
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 50)
+    private IdeaStatus status = IdeaStatus.SUBMITTED;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = &quot;submitter_id&quot;, nullable = false)
+    private User submitter;
+
+    @OneToOne(mappedBy = &quot;idea&quot;, cascade = CascadeType.ALL, orphanRemoval = true)
+    private IdeaAttachment attachment;
+
+<span class="fc" id="L61">    @OneToMany(mappedBy = &quot;idea&quot;, cascade = CascadeType.ALL, orphanRemoval = true)</span>
+    @OrderBy(&quot;createdAt ASC&quot;)
+    private List&lt;IdeaEvaluation&gt; evaluations = new ArrayList&lt;&gt;();
+
+    @Column(name = &quot;created_at&quot;, nullable = false)
+    private LocalDateTime createdAt;
+
+    @Column(name = &quot;updated_at&quot;, nullable = false)
+    private LocalDateTime updatedAt;
+
+    @Version
+    @Column(name = &quot;version&quot;)
+    private Integer version;
+
+    @PrePersist
+    public void onCreate() {
+<span class="fc" id="L77">        LocalDateTime now = LocalDateTime.now();</span>
+<span class="fc" id="L78">        createdAt = now;</span>
+<span class="fc" id="L79">        updatedAt = now;</span>
+<span class="pc bpc" id="L80" title="1 of 2 branches missed.">        if (status == null) {</span>
+<span class="nc" id="L81">            status = IdeaStatus.SUBMITTED;</span>
+        }
+<span class="fc" id="L83">    }</span>
+
+    @PreUpdate
+    public void onUpdate() {
+<span class="fc" id="L87">        updatedAt = LocalDateTime.now();</span>
+<span class="fc" id="L88">    }</span>
+
+    public Long getId() {
+<span class="fc" id="L91">        return id;</span>
+    }
+
+    public void setId(Long id) {
+<span class="fc" id="L95">        this.id = id;</span>
+<span class="fc" id="L96">    }</span>
+
+    public String getTitle() {
+<span class="fc" id="L99">        return title;</span>
+    }
+
+    public void setTitle(String title) {
+<span class="fc" id="L103">        this.title = title;</span>
+<span class="fc" id="L104">    }</span>
+
+    public String getDescription() {
+<span class="fc" id="L107">        return description;</span>
+    }
+
+    public void setDescription(String description) {
+<span class="fc" id="L111">        this.description = description;</span>
+<span class="fc" id="L112">    }</span>
+
+    public String getCategory() {
+<span class="fc" id="L115">        return category;</span>
+    }
+
+    public void setCategory(String category) {
+<span class="fc" id="L119">        this.category = category;</span>
+<span class="fc" id="L120">    }</span>
+
+    public IdeaStatus getStatus() {
+<span class="fc" id="L123">        return status;</span>
+    }
+
+    public void setStatus(IdeaStatus status) {
+<span class="fc" id="L127">        this.status = status;</span>
+<span class="fc" id="L128">    }</span>
+
+    public User getSubmitter() {
+<span class="fc" id="L131">        return submitter;</span>
+    }
+
+    public void setSubmitter(User submitter) {
+<span class="fc" id="L135">        this.submitter = submitter;</span>
+<span class="fc" id="L136">    }</span>
+
+    public IdeaAttachment getAttachment() {
+<span class="fc" id="L139">        return attachment;</span>
+    }
+
+    public void setAttachment(IdeaAttachment attachment) {
+<span class="fc" id="L143">        this.attachment = attachment;</span>
+<span class="fc" id="L144">    }</span>
+
+    public List&lt;IdeaEvaluation&gt; getEvaluations() {
+<span class="fc" id="L147">        return evaluations;</span>
+    }
+
+    public void setEvaluations(List&lt;IdeaEvaluation&gt; evaluations) {
+<span class="nc" id="L151">        this.evaluations = evaluations;</span>
+<span class="nc" id="L152">    }</span>
+
+    public LocalDateTime getCreatedAt() {
+<span class="fc" id="L155">        return createdAt;</span>
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+<span class="nc" id="L159">        this.createdAt = createdAt;</span>
+<span class="nc" id="L160">    }</span>
+
+    public LocalDateTime getUpdatedAt() {
+<span class="fc" id="L163">        return updatedAt;</span>
+    }
+
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+<span class="nc" id="L167">        this.updatedAt = updatedAt;</span>
+<span class="nc" id="L168">    }</span>
+
+    public Integer getVersion() {
+<span class="fc" id="L171">        return version;</span>
+    }
+
+    public void setVersion(Integer version) {
+<span class="fc" id="L175">        this.version = version;</span>
+<span class="fc" id="L176">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

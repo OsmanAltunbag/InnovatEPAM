@@ -10,7 +10,9 @@ import {
 
 export default function EvaluationPanel({ idea }) {
   const { user } = useAuth();
-  const { updateStatus, addComment, fetchEvaluations, loading } = useIdeas();
+  const { updateStatus, addComment, fetchEvaluations, loading } = useIdeas({
+    autoLoad: false
+  });
   const [evaluations, setEvaluations] = useState([]);
   const [showStatusForm, setShowStatusForm] = useState(false);
   const [showCommentForm, setShowCommentForm] = useState(false);

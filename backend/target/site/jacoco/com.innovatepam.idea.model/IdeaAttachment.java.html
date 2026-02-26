@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="tr"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>IdeaAttachment.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">InnovatEPAM Auth Service</a> &gt; <a href="index.source.html" class="el_package">com.innovatepam.idea.model</a> &gt; <span class="el_source">IdeaAttachment.java</span></div><h1>IdeaAttachment.java</h1><pre class="source lang-java linenums">package com.innovatepam.idea.model;
+
+import java.time.LocalDateTime;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
+
+@Entity
+@Table(name = &quot;idea_attachments&quot;)
+<span class="fc" id="L23">public class IdeaAttachment {</span>
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = &quot;idea_id&quot;, nullable = false, unique = true)
+    private Idea idea;
+
+    @NotBlank(message = &quot;Original filename is required&quot;)
+    @Column(name = &quot;original_filename&quot;, nullable = false, length = 255)
+    private String originalFilename;
+
+    @NotBlank(message = &quot;Stored filename is required&quot;)
+    @Column(name = &quot;stored_filename&quot;, nullable = false, length = 255)
+    private String storedFilename;
+
+    @NotNull(message = &quot;File type is required&quot;)
+    @Enumerated(EnumType.STRING)
+    @Column(name = &quot;file_type&quot;, nullable = false, length = 20)
+    private FileType fileType;
+
+    @NotNull(message = &quot;File size is required&quot;)
+    @Positive(message = &quot;File size must be greater than 0&quot;)
+    @Column(name = &quot;file_size&quot;, nullable = false)
+    private Long fileSize;
+
+    @NotBlank(message = &quot;Storage location is required&quot;)
+    @Column(name = &quot;storage_location&quot;, nullable = false, length = 500)
+    private String storageLocation;
+
+    @Column(name = &quot;created_at&quot;, nullable = false)
+    private LocalDateTime createdAt;
+
+    @PrePersist
+    public void onCreate() {
+<span class="pc bpc" id="L59" title="1 of 2 branches missed.">        if (createdAt == null) {</span>
+<span class="fc" id="L60">            createdAt = LocalDateTime.now();</span>
+        }
+<span class="fc" id="L62">    }</span>
+
+    public Long getId() {
+<span class="nc" id="L65">        return id;</span>
+    }
+
+    public void setId(Long id) {
+<span class="nc" id="L69">        this.id = id;</span>
+<span class="nc" id="L70">    }</span>
+
+    public Idea getIdea() {
+<span class="fc" id="L73">        return idea;</span>
+    }
+
+    public void setIdea(Idea idea) {
+<span class="fc" id="L77">        this.idea = idea;</span>
+<span class="fc" id="L78">    }</span>
+
+    public String getOriginalFilename() {
+<span class="fc" id="L81">        return originalFilename;</span>
+    }
+
+    public void setOriginalFilename(String originalFilename) {
+<span class="fc" id="L85">        this.originalFilename = originalFilename;</span>
+<span class="fc" id="L86">    }</span>
+
+    public String getStoredFilename() {
+<span class="fc" id="L89">        return storedFilename;</span>
+    }
+
+    public void setStoredFilename(String storedFilename) {
+<span class="fc" id="L93">        this.storedFilename = storedFilename;</span>
+<span class="fc" id="L94">    }</span>
+
+    public FileType getFileType() {
+<span class="fc" id="L97">        return fileType;</span>
+    }
+
+    public void setFileType(FileType fileType) {
+<span class="fc" id="L101">        this.fileType = fileType;</span>
+<span class="fc" id="L102">    }</span>
+
+    public Long getFileSize() {
+<span class="fc" id="L105">        return fileSize;</span>
+    }
+
+    public void setFileSize(Long fileSize) {
+<span class="fc" id="L109">        this.fileSize = fileSize;</span>
+<span class="fc" id="L110">    }</span>
+
+    public String getStorageLocation() {
+<span class="fc" id="L113">        return storageLocation;</span>
+    }
+
+    public void setStorageLocation(String storageLocation) {
+<span class="fc" id="L117">        this.storageLocation = storageLocation;</span>
+<span class="fc" id="L118">    }</span>
+
+    public LocalDateTime getCreatedAt() {
+<span class="nc" id="L121">        return createdAt;</span>
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+<span class="nc" id="L125">        this.createdAt = createdAt;</span>
+<span class="nc" id="L126">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

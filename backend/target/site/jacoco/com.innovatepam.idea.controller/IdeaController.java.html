@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="tr"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>IdeaController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">InnovatEPAM Auth Service</a> &gt; <a href="index.source.html" class="el_package">com.innovatepam.idea.controller</a> &gt; <span class="el_source">IdeaController.java</span></div><h1>IdeaController.java</h1><pre class="source lang-java linenums">package com.innovatepam.idea.controller;
+
+import org.springframework.core.io.Resource;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+
+import com.innovatepam.auth.model.User;
+import com.innovatepam.auth.repository.UserRepository;
+import com.innovatepam.idea.dto.IdeaDetailResponse;
+import com.innovatepam.idea.dto.IdeaResponse;
+import com.innovatepam.idea.dto.PageResponse;
+import com.innovatepam.idea.exception.UnauthorizedAccessException;
+import com.innovatepam.idea.model.Idea;
+import com.innovatepam.idea.model.IdeaStatus;
+import com.innovatepam.idea.service.FileStorageService;
+import com.innovatepam.idea.service.IdeaService;
+
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
+
+@RestController
+@RequestMapping(&quot;/api/v1/ideas&quot;)
+@Validated
+public class IdeaController {
+    private final IdeaService ideaService;
+    private final FileStorageService fileStorageService;
+    private final UserRepository userRepository;
+
+    public IdeaController(
+        IdeaService ideaService,
+        FileStorageService fileStorageService,
+        UserRepository userRepository
+<span class="fc" id="L49">    ) {</span>
+<span class="fc" id="L50">        this.ideaService = ideaService;</span>
+<span class="fc" id="L51">        this.fileStorageService = fileStorageService;</span>
+<span class="fc" id="L52">        this.userRepository = userRepository;</span>
+<span class="fc" id="L53">    }</span>
+
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PreAuthorize(&quot;hasAnyRole('SUBMITTER', 'ADMIN')&quot;)
+    public ResponseEntity&lt;IdeaResponse&gt; createIdea(
+        @RequestParam @NotBlank(message = &quot;Title is required&quot;) @Size(max = 255, message = &quot;Title cannot exceed 255 characters&quot;) String title,
+        @RequestParam @NotBlank(message = &quot;Description is required&quot;) String description,
+        @RequestParam @NotBlank(message = &quot;Category is required&quot;) @Size(max = 50, message = &quot;Category cannot exceed 50 characters&quot;) String category,
+        @RequestParam(required = false) MultipartFile file,
+        Authentication authentication
+    ) {
+<span class="fc" id="L64">        User submitter = getCurrentUser(authentication);</span>
+<span class="fc" id="L65">        IdeaResponse idea = ideaService.createIdea(title, description, category, submitter, file);</span>
+<span class="fc" id="L66">        return ResponseEntity.status(HttpStatus.CREATED).body(idea);</span>
+    }
+
+    @GetMapping
+    @PreAuthorize(&quot;isAuthenticated()&quot;)
+    public ResponseEntity&lt;PageResponse&lt;IdeaResponse&gt;&gt; getAllIdeas(
+        @RequestParam(defaultValue = &quot;0&quot;) int page,
+        @RequestParam(defaultValue = &quot;10&quot;) int size,
+        @RequestParam(required = false) IdeaStatus status,
+        @RequestParam(required = false) String category
+    ) {
+<span class="fc" id="L77">        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, &quot;createdAt&quot;));</span>
+        Page&lt;IdeaResponse&gt; ideas;
+
+<span class="pc bpc" id="L80" title="1 of 4 branches missed.">        if (status != null &amp;&amp; category != null) {</span>
+<span class="nc" id="L81">            ideas = ideaService.getIdeasByStatusAndCategory(status, category, pageable);</span>
+<span class="fc bfc" id="L82" title="All 2 branches covered.">        } else if (status != null) {</span>
+<span class="fc" id="L83">            ideas = ideaService.getIdeasByStatus(status, pageable);</span>
+<span class="pc bpc" id="L84" title="1 of 2 branches missed.">        } else if (category != null) {</span>
+<span class="nc" id="L85">            ideas = ideaService.getIdeasByCategory(category, pageable);</span>
+        } else {
+<span class="fc" id="L87">            ideas = ideaService.getIdeas(pageable);</span>
+        }
+
+<span class="fc" id="L90">        return ResponseEntity.ok(PageResponse.of(ideas));</span>
+    }
+
+    @GetMapping(&quot;/{id}&quot;)
+    @PreAuthorize(&quot;isAuthenticated()&quot;)
+    public ResponseEntity&lt;IdeaDetailResponse&gt; getIdeaById(@PathVariable Long id) {
+<span class="fc" id="L96">        IdeaDetailResponse idea = ideaService.getIdeaDetailById(id);</span>
+<span class="fc" id="L97">        return ResponseEntity.ok(idea);</span>
+    }
+
+    @GetMapping(&quot;/{ideaId}/attachments/{attachmentId}&quot;)
+    @PreAuthorize(&quot;isAuthenticated()&quot;)
+    public ResponseEntity&lt;Resource&gt; downloadAttachment(
+        @PathVariable Long ideaId,
+        @PathVariable Long attachmentId
+    ) {
+<span class="nc" id="L106">        Idea idea = ideaService.getIdeaById(ideaId);</span>
+        
+<span class="nc bnc" id="L108" title="All 4 branches missed.">        if (idea.getAttachment() == null || !idea.getAttachment().getId().equals(attachmentId)) {</span>
+<span class="nc" id="L109">            throw new UnauthorizedAccessException(&quot;Attachment not found for this idea&quot;);</span>
+        }
+
+<span class="nc" id="L112">        Resource resource = fileStorageService.loadFileAsResource(idea.getAttachment());</span>
+        
+<span class="nc" id="L114">        return ResponseEntity.ok()</span>
+<span class="nc" id="L115">            .contentType(MediaType.APPLICATION_OCTET_STREAM)</span>
+<span class="nc" id="L116">            .header(HttpHeaders.CONTENT_DISPOSITION, </span>
+<span class="nc" id="L117">                &quot;attachment; filename=\&quot;&quot; + idea.getAttachment().getOriginalFilename() + &quot;\&quot;&quot;)</span>
+<span class="nc" id="L118">            .body(resource);</span>
+    }
+
+    private User getCurrentUser(Authentication authentication) {
+<span class="fc" id="L122">        String email = authentication.getName();</span>
+<span class="fc" id="L123">        System.out.println(&quot;[DEBUG] Looking up user with email: &quot; + email);</span>
+<span class="fc" id="L124">        User user = userRepository.findByEmail(email)</span>
+<span class="fc" id="L125">            .orElseThrow(() -&gt; {</span>
+<span class="nc" id="L126">                System.err.println(&quot;[ERROR] User not found in database: &quot; + email);</span>
+<span class="nc" id="L127">                return new UnauthorizedAccessException(&quot;User not found: &quot; + email);</span>
+            });
+<span class="fc" id="L129">        System.out.println(&quot;[DEBUG] Found user: ID=&quot; + user.getId() + &quot;, Email=&quot; + user.getEmail());</span>
+<span class="fc" id="L130">        return user;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

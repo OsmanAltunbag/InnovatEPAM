@@ -371,9 +371,8 @@ export const ideaHandlers = [
       );
     }
 
-    // Return mock PDF blob
-    const mockPdfContent = new Blob(['Mock PDF content'], { type: 'application/pdf' });
-    return new HttpResponse(mockPdfContent, {
+    // Return text content instead of Blob to avoid Vitest stream errors
+    return HttpResponse.text('Mock PDF content', {
       status: 200,
       headers: {
         'Content-Type': 'application/pdf',

@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="tr"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>IdeaStatusValidator.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">InnovatEPAM Auth Service</a> &gt; <a href="index.source.html" class="el_package">com.innovatepam.idea.util</a> &gt; <span class="el_source">IdeaStatusValidator.java</span></div><h1>IdeaStatusValidator.java</h1><pre class="source lang-java linenums">package com.innovatepam.idea.util;
+
+import java.util.EnumMap;
+import java.util.EnumSet;
+import java.util.Map;
+import java.util.Set;
+
+import com.innovatepam.idea.model.IdeaStatus;
+
+/**
+ * Validates status transitions for ideas following the defined workflow.
+ * 
+ * Valid transitions:
+ * - SUBMITTED → UNDER_REVIEW
+ * - SUBMITTED → REJECTED (direct rejection allowed)
+ * - UNDER_REVIEW → ACCEPTED
+ * - UNDER_REVIEW → REJECTED
+ */
+<span class="nc" id="L19">public class IdeaStatusValidator {</span>
+    
+<span class="fc" id="L21">    private static final Map&lt;IdeaStatus, Set&lt;IdeaStatus&gt;&gt; ALLOWED_TRANSITIONS = new EnumMap&lt;&gt;(IdeaStatus.class);</span>
+    
+    static {
+<span class="fc" id="L24">        ALLOWED_TRANSITIONS.put(IdeaStatus.SUBMITTED, </span>
+<span class="fc" id="L25">            EnumSet.of(IdeaStatus.UNDER_REVIEW, IdeaStatus.REJECTED));</span>
+<span class="fc" id="L26">        ALLOWED_TRANSITIONS.put(IdeaStatus.UNDER_REVIEW, </span>
+<span class="fc" id="L27">            EnumSet.of(IdeaStatus.ACCEPTED, IdeaStatus.REJECTED));</span>
+<span class="fc" id="L28">        ALLOWED_TRANSITIONS.put(IdeaStatus.ACCEPTED, EnumSet.noneOf(IdeaStatus.class));</span>
+<span class="fc" id="L29">        ALLOWED_TRANSITIONS.put(IdeaStatus.REJECTED, EnumSet.noneOf(IdeaStatus.class));</span>
+<span class="fc" id="L30">    }</span>
+    
+    /**
+     * Checks if the transition from current status to new status is valid.
+     * 
+     * @param currentStatus The current status of the idea
+     * @param newStatus The target status
+     * @return true if transition is allowed, false otherwise
+     */
+    public static boolean isValidTransition(IdeaStatus currentStatus, IdeaStatus newStatus) {
+<span class="fc bfc" id="L40" title="All 4 branches covered.">        if (currentStatus == null || newStatus == null) {</span>
+<span class="fc" id="L41">            return false;</span>
+        }
+        
+<span class="fc bfc" id="L44" title="All 2 branches covered.">        if (currentStatus == newStatus) {</span>
+<span class="fc" id="L45">            return false; // No self-transitions</span>
+        }
+        
+<span class="fc" id="L48">        Set&lt;IdeaStatus&gt; allowedTargets = ALLOWED_TRANSITIONS.get(currentStatus);</span>
+<span class="pc bpc" id="L49" title="1 of 4 branches missed.">        return allowedTargets != null &amp;&amp; allowedTargets.contains(newStatus);</span>
+    }
+    
+    /**
+     * Gets the set of allowed target statuses from a given current status.
+     * 
+     * @param currentStatus The current status
+     * @return Set of allowed target statuses (empty if none allowed)
+     */
+    public static Set&lt;IdeaStatus&gt; getAllowedTransitions(IdeaStatus currentStatus) {
+<span class="fc bfc" id="L59" title="All 2 branches covered.">        if (currentStatus == null) {</span>
+<span class="fc" id="L60">            return EnumSet.noneOf(IdeaStatus.class);</span>
+        }
+<span class="fc" id="L62">        return EnumSet.copyOf(ALLOWED_TRANSITIONS.getOrDefault(currentStatus, EnumSet.noneOf(IdeaStatus.class)));</span>
+    }
+    
+    /**
+     * Checks if a comment is required for the given status transition.
+     * Comment is mandatory when transitioning to REJECTED status.
+     * 
+     * @param newStatus The target status
+     * @return true if comment is required, false otherwise
+     */
+    public static boolean isCommentRequired(IdeaStatus newStatus) {
+<span class="fc bfc" id="L73" title="All 2 branches covered.">        return newStatus == IdeaStatus.REJECTED;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>
