@@ -5,7 +5,11 @@ function Get-RepoRoot {
     try {
         $result = git rev-parse --show-toplevel 2>$null
         if ($LASTEXITCODE -eq 0) {
-            return $result
+            $candidate = $result.Trim()
+            $templatesPath = Join-Path $candidate ".specify/templates"
+            if (Test-Path -LiteralPath $templatesPath) {
+                return $candidate
+            }
         }
     } catch {
         # Git command failed
@@ -33,7 +37,7 @@ function Get-CurrentBranch {
     
     # For non-git repos, try to find the latest feature directory
     $repoRoot = Get-RepoRoot
-    $specsDir = Join-Path $repoRoot "specs"
+    $specsDir = Join-Path $repoRoot ".specify/specs"
     
     if (Test-Path $specsDir) {
         $latestFeature = ""
@@ -89,7 +93,7 @@ function Test-FeatureBranch {
 
 function Get-FeatureDir {
     param([string]$RepoRoot, [string]$Branch)
-    Join-Path $RepoRoot "specs/$Branch"
+    Join-Path $RepoRoot ".specify/specs/$Branch"
 }
 
 function Get-FeaturePathsEnv {

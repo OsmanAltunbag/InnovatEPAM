@@ -1,0 +1,76 @@
+-------------------------------------------------------------------------------
+Test set: com.innovatepam.auth.repository.UserRepositoryIntegrationTest
+-------------------------------------------------------------------------------
+Tests run: 8, Failures: 0, Errors: 8, Skipped: 0, Time elapsed: 0.129 s <<< FAILURE! -- in com.innovatepam.auth.repository.UserRepositoryIntegrationTest
+com.innovatepam.auth.repository.UserRepositoryIntegrationTest.save_WithUniqueEmail_SavesSuccessfully -- Time elapsed: 0.017 s <<< ERROR!
+java.lang.RuntimeException: Submitter role not found in test data
+	at com.innovatepam.auth.repository.UserRepositoryIntegrationTest.lambda$setUp$0(UserRepositoryIntegrationTest.java:37)
+	at java.base/java.util.Optional.orElseThrow(Optional.java:403)
+	at com.innovatepam.auth.repository.UserRepositoryIntegrationTest.setUp(UserRepositoryIntegrationTest.java:37)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1597)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1597)
+
+com.innovatepam.auth.repository.UserRepositoryIntegrationTest.existsByEmail_WithNonExistingUser_ReturnsFalse -- Time elapsed: 0.011 s <<< ERROR!
+java.lang.RuntimeException: Submitter role not found in test data
+	at com.innovatepam.auth.repository.UserRepositoryIntegrationTest.lambda$setUp$0(UserRepositoryIntegrationTest.java:37)
+	at java.base/java.util.Optional.orElseThrow(Optional.java:403)
+	at com.innovatepam.auth.repository.UserRepositoryIntegrationTest.setUp(UserRepositoryIntegrationTest.java:37)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1597)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1597)
+
+com.innovatepam.auth.repository.UserRepositoryIntegrationTest.findById_WithExistingUser_ReturnsUser -- Time elapsed: 0.010 s <<< ERROR!
+java.lang.RuntimeException: Submitter role not found in test data
+	at com.innovatepam.auth.repository.UserRepositoryIntegrationTest.lambda$setUp$0(UserRepositoryIntegrationTest.java:37)
+	at java.base/java.util.Optional.orElseThrow(Optional.java:403)
+	at com.innovatepam.auth.repository.UserRepositoryIntegrationTest.setUp(UserRepositoryIntegrationTest.java:37)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1597)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1597)
+
+com.innovatepam.auth.repository.UserRepositoryIntegrationTest.delete_WithExistingUser_DeletesSuccessfully -- Time elapsed: 0.013 s <<< ERROR!
+java.lang.RuntimeException: Submitter role not found in test data
+	at com.innovatepam.auth.repository.UserRepositoryIntegrationTest.lambda$setUp$0(UserRepositoryIntegrationTest.java:37)
+	at java.base/java.util.Optional.orElseThrow(Optional.java:403)
+	at com.innovatepam.auth.repository.UserRepositoryIntegrationTest.setUp(UserRepositoryIntegrationTest.java:37)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1597)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1597)
+
+com.innovatepam.auth.repository.UserRepositoryIntegrationTest.findByEmail_WithExistingUser_ReturnsUser -- Time elapsed: 0.014 s <<< ERROR!
+java.lang.RuntimeException: Submitter role not found in test data
+	at com.innovatepam.auth.repository.UserRepositoryIntegrationTest.lambda$setUp$0(UserRepositoryIntegrationTest.java:37)
+	at java.base/java.util.Optional.orElseThrow(Optional.java:403)
+	at com.innovatepam.auth.repository.UserRepositoryIntegrationTest.setUp(UserRepositoryIntegrationTest.java:37)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1597)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1597)
+
+com.innovatepam.auth.repository.UserRepositoryIntegrationTest.existsByEmail_WithExistingUser_ReturnsTrue -- Time elapsed: 0.011 s <<< ERROR!
+java.lang.RuntimeException: Submitter role not found in test data
+	at com.innovatepam.auth.repository.UserRepositoryIntegrationTest.lambda$setUp$0(UserRepositoryIntegrationTest.java:37)
+	at java.base/java.util.Optional.orElseThrow(Optional.java:403)
+	at com.innovatepam.auth.repository.UserRepositoryIntegrationTest.setUp(UserRepositoryIntegrationTest.java:37)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1597)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1597)
+
+com.innovatepam.auth.repository.UserRepositoryIntegrationTest.save_WithDuplicateEmail_ThrowsException -- Time elapsed: 0.010 s <<< ERROR!
+java.lang.RuntimeException: Submitter role not found in test data
+	at com.innovatepam.auth.repository.UserRepositoryIntegrationTest.lambda$setUp$0(UserRepositoryIntegrationTest.java:37)
+	at java.base/java.util.Optional.orElseThrow(Optional.java:403)
+	at com.innovatepam.auth.repository.UserRepositoryIntegrationTest.setUp(UserRepositoryIntegrationTest.java:37)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1597)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1597)
+
+com.innovatepam.auth.repository.UserRepositoryIntegrationTest.findByEmail_WithNonExistingUser_ReturnsEmpty -- Time elapsed: 0.010 s <<< ERROR!
+java.lang.RuntimeException: Submitter role not found in test data
+	at com.innovatepam.auth.repository.UserRepositoryIntegrationTest.lambda$setUp$0(UserRepositoryIntegrationTest.java:37)
+	at java.base/java.util.Optional.orElseThrow(Optional.java:403)
+	at com.innovatepam.auth.repository.UserRepositoryIntegrationTest.setUp(UserRepositoryIntegrationTest.java:37)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1597)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1597)
+

@@ -1,0 +1,37 @@
+-------------------------------------------------------------------------------
+Test set: com.innovatepam.auth.controller.AuthControllerLoginIntegrationTest
+-------------------------------------------------------------------------------
+Tests run: 9, Failures: 3, Errors: 0, Skipped: 0, Time elapsed: 22.96 s <<< FAILURE! -- in com.innovatepam.auth.controller.AuthControllerLoginIntegrationTest
+com.innovatepam.auth.controller.AuthControllerLoginIntegrationTest.login_After5FailedAttempts_ReturnsLocked -- Time elapsed: 0.112 s <<< FAILURE!
+java.lang.AssertionError: Status expected:<403> but was:<401>
+	at org.springframework.test.util.AssertionErrors.fail(AssertionErrors.java:59)
+	at org.springframework.test.util.AssertionErrors.assertEquals(AssertionErrors.java:122)
+	at org.springframework.test.web.servlet.result.StatusResultMatchers.lambda$matcher$9(StatusResultMatchers.java:637)
+	at org.springframework.test.web.servlet.MockMvc$1.andExpect(MockMvc.java:214)
+	at com.innovatepam.auth.controller.AuthControllerLoginIntegrationTest.login_After5FailedAttempts_ReturnsLocked(AuthControllerLoginIntegrationTest.java:154)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1597)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1597)
+
+com.innovatepam.auth.controller.AuthControllerLoginIntegrationTest.login_WithValidCredentials_ReturnsOkAndToken -- Time elapsed: 0.051 s <<< FAILURE!
+java.lang.AssertionError: Status expected:<200> but was:<401>
+	at org.springframework.test.util.AssertionErrors.fail(AssertionErrors.java:59)
+	at org.springframework.test.util.AssertionErrors.assertEquals(AssertionErrors.java:122)
+	at org.springframework.test.web.servlet.result.StatusResultMatchers.lambda$matcher$9(StatusResultMatchers.java:637)
+	at org.springframework.test.web.servlet.MockMvc$1.andExpect(MockMvc.java:214)
+	at com.innovatepam.auth.controller.AuthControllerLoginIntegrationTest.login_WithValidCredentials_ReturnsOkAndToken(AuthControllerLoginIntegrationTest.java:68)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1597)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1597)
+
+com.innovatepam.auth.controller.AuthControllerLoginIntegrationTest.login_WithLockedAccount_EvenWithValidPassword_ReturnsLocked -- Time elapsed: 0.103 s <<< FAILURE!
+java.lang.AssertionError: Status expected:<403> but was:<401>
+	at org.springframework.test.util.AssertionErrors.fail(AssertionErrors.java:59)
+	at org.springframework.test.util.AssertionErrors.assertEquals(AssertionErrors.java:122)
+	at org.springframework.test.web.servlet.result.StatusResultMatchers.lambda$matcher$9(StatusResultMatchers.java:637)
+	at org.springframework.test.web.servlet.MockMvc$1.andExpect(MockMvc.java:214)
+	at com.innovatepam.auth.controller.AuthControllerLoginIntegrationTest.login_WithLockedAccount_EvenWithValidPassword_ReturnsLocked(AuthControllerLoginIntegrationTest.java:175)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1597)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1597)
+

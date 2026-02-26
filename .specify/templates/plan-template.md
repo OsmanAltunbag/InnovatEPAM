@@ -100,5 +100,6 @@ directories captured above]
 
 | Violation | Why Needed | Simpler Alternative Rejected Because |
 |-----------|------------|-------------------------------------|
-| [e.g., 4th project] | [current need] | [why 3 projects insufficient] |
-| [e.g., Repository pattern] | [specific problem] | [why direct DB access insufficient] |
+| [e.g., Skip Repository pattern] | [specific problem/constraint] | [why Repository abstraction is inappropriate here] |
+| [e.g., Test coverage < 80%] | [current need] | [why 80% coverage is not achievable/relevant] |
+| [e.g., Non-RESTful endpoint] | [technical reason] | [why REST semantics don't fit this use case] |

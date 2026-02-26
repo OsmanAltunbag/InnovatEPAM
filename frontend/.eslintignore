@@ -1,0 +1,31 @@
+# Dependencies
+node_modules/
+
+# Build outputs
+dist/
+build/
+.vite/
+
+# Coverage reports
+coverage/
+
+# Test outputs
+*.test.js
+*.test.jsx
+*.spec.js
+*.spec.jsx
+
+# Minified files
+*.min.js
+*.min.jsx
+
+# Lock files
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# Environment files
+.env*
+
+# Cache
+.cache/

@@ -1,0 +1,32 @@
+# Node.js / frontend
+node_modules/
+dist/
+build/
+*.log
+.env*
+
+# Java / backend
+/target/
+*.class
+*.jar
+*.war
+*.ear
+.gradle/
+/build/
+
+# Test outputs
+coverage/
+
+# Python (just in case)
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# IDE / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+*.tmp
+*.swp

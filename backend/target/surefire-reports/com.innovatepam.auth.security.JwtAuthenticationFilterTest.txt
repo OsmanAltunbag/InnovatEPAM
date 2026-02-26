@@ -1,0 +1,28 @@
+-------------------------------------------------------------------------------
+Test set: com.innovatepam.auth.security.JwtAuthenticationFilterTest
+-------------------------------------------------------------------------------
+Tests run: 10, Failures: 2, Errors: 0, Skipped: 0, Time elapsed: 0.643 s <<< FAILURE! -- in com.innovatepam.auth.security.JwtAuthenticationFilterTest
+com.innovatepam.auth.security.JwtAuthenticationFilterTest.doFilterInternal_WithDifferentRoles_SetsCorrectAuthority -- Time elapsed: 0.251 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: Expected to find ROLE_EVALUATOR/ADMIN in authorities for role: evaluator/admin ==> expected: <true> but was: <false>
+	at org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:151)
+	at org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:132)
+	at org.junit.jupiter.api.AssertTrue.failNotTrue(AssertTrue.java:63)
+	at org.junit.jupiter.api.AssertTrue.assertTrue(AssertTrue.java:36)
+	at org.junit.jupiter.api.Assertions.assertTrue(Assertions.java:214)
+	at com.innovatepam.auth.security.JwtAuthenticationFilterTest.doFilterInternal_WithDifferentRoles_SetsCorrectAuthority(JwtAuthenticationFilterTest.java:180)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1597)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1597)
+
+com.innovatepam.auth.security.JwtAuthenticationFilterTest.doFilterInternal_ExtractsRoleFromClaims -- Time elapsed: 0.007 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: Expected to find ROLE_EVALUATOR/ADMIN in authorities ==> expected: <true> but was: <false>
+	at org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:151)
+	at org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:132)
+	at org.junit.jupiter.api.AssertTrue.failNotTrue(AssertTrue.java:63)
+	at org.junit.jupiter.api.AssertTrue.assertTrue(AssertTrue.java:36)
+	at org.junit.jupiter.api.Assertions.assertTrue(Assertions.java:214)
+	at com.innovatepam.auth.security.JwtAuthenticationFilterTest.doFilterInternal_ExtractsRoleFromClaims(JwtAuthenticationFilterTest.java:139)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1597)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1597)
+
